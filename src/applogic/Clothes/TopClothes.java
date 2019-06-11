@@ -4,7 +4,7 @@ import applogic.NetStuff.DataBaseWorks.DBConst;
 import applogic.NetStuff.DataBaseWorks.iQuery;
 import applogic.Enums.Color;
 import applogic.Enums.Material;
-import applogic.mainpkg.Main;
+import applogic.mainpkg.ClientMain;
 import org.json.JSONObject;
 
 import java.io.Serializable;
@@ -57,7 +57,7 @@ public class TopClothes extends Clothes implements Serializable, iQuery {
         result = result * prime + (getIsForMan() ? (int)Math.pow(prime, 5):0);
         result = result * prime + getSize() * (int)Math.pow(prime, 6);
         result = result * prime + getColor().ordinal() * (int)Math.pow(prime, 7);
-        result = result * prime + Main.strHashCode(getName());
+        result = result * prime + ClientMain.strHashCode(getName());
         result = result * prime + getMaterial().ordinal()  * (int)Math.pow(prime, 8);
         return result;
     }

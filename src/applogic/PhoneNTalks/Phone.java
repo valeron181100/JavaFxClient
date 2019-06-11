@@ -2,7 +2,7 @@ package applogic.PhoneNTalks;
 
 import applogic.Humanlike.*;
 import applogic.Interfaces.*;
-import applogic.mainpkg.Main;
+import applogic.mainpkg.ClientMain;
 
 import java.util.ArrayList;
 
@@ -49,7 +49,7 @@ public class Phone implements IPhone, IBusy {
             }
         }
         current_call = new PhoneCall(this, phone1, owner.get_position().getHouse());
-        Main.pause("Связь установлена: " + owner.toString() + " и " + phone1.getOwner().toString());
+        ClientMain.pause("Связь установлена: " + owner.toString() + " и " + phone1.getOwner().toString());
         return current_call;
     }
 

@@ -4,7 +4,7 @@ import applogic.Buildings.House;
 import applogic.Humanlike.Human;
 import applogic.Interfaces.IPhone;
 import applogic.Interfaces.ITalky;
-import applogic.mainpkg.Main;
+import applogic.mainpkg.ClientMain;
 
 import java.util.concurrent.TimeUnit;
 
@@ -50,17 +50,17 @@ public class PhoneCall implements ITalky {
 
     public void end(){
         house.getStation().rmCall(this);
-        Main.pause("Связь прекращена: " + phone1.getOwner().toString() + " и " + phone2.getOwner().toString());
+        ClientMain.pause("Связь прекращена: " + phone1.getOwner().toString() + " и " + phone2.getOwner().toString());
     }
 
     @Override
     public void ask(Human hm){
         if (house.getStation().getCalls().contains(this)) {
             set_current_quest(JokeNQuestionMachine.getRandomQuestion());
-            Main.pause(hm.toString() + ": \"" + getCurrent_question().getQuestion() + "\"");
+            ClientMain.pause(hm.toString() + ": \"" + getCurrent_question().getQuestion() + "\"");
         }
         else{
-            Main.pause("Извините, но этого звонка больше не существует(((");
+            ClientMain.pause("Извините, но этого звонка больше не существует(((");
         }
     }
 
@@ -68,13 +68,13 @@ public class PhoneCall implements ITalky {
     public void answer(Human hm){
         if (house.getStation().getCalls().contains(this)) {
             if (getCurrent_question() != null) {
-                Main.pause(hm.toString() + ": \"" + getCurrent_question().getAnswer() + "\"");
+                ClientMain.pause(hm.toString() + ": \"" + getCurrent_question().getAnswer() + "\"");
             } else {
-                Main.pause(hm.toString() + ": \"Я не знаю, что тебе сказать(((\"");
+                ClientMain.pause(hm.toString() + ": \"Я не знаю, что тебе сказать(((\"");
             }
         }
         else{
-            Main.pause("Извините, но этого звонка больше не существует(((");
+            ClientMain.pause("Извините, но этого звонка больше не существует(((");
         }
     }
 
@@ -83,10 +83,10 @@ public class PhoneCall implements ITalky {
         if (house.getStation().getCalls().contains(this)) {
             Joke joke = JokeNQuestionMachine.get_joke(hm.get_humorlvl());
             set_current_joke(joke);
-            Main.pause(hm.toString() + ": \"" + joke.getJoke() + "\"");
+            ClientMain.pause(hm.toString() + ": \"" + joke.getJoke() + "\"");
         }
         else{
-            Main.pause("Извините, но этого звонка больше не существует(((");
+            ClientMain.pause("Извините, но этого звонка больше не существует(((");
         }
     }
 
@@ -94,23 +94,23 @@ public class PhoneCall implements ITalky {
     public void answ_joke(Human hm) {
         if (house.getStation().getCalls().contains(this)) {
             if (getCurrent_joke() != null) {
-                Main.pause(hm.toString() + ": \"" + getCurrent_joke().getAnswer() + "\"");
+                ClientMain.pause(hm.toString() + ": \"" + getCurrent_joke().getAnswer() + "\"");
             } else {
-                Main.pause(hm.toString() + ": \"Я не знаю, что тебе сказать(((\"");
+                ClientMain.pause(hm.toString() + ": \"Я не знаю, что тебе сказать(((\"");
             }
         }
         else{
-            Main.pause("Извините, но этого звонка больше не существует(((");
+            ClientMain.pause("Извините, но этого звонка больше не существует(((");
         }
     }
 
     @Override
     public void say(Human hm, String message){
         if (house.getStation().getCalls().contains(this)) {
-            Main.pause(hm.toString() + ": " + message);
+            ClientMain.pause(hm.toString() + ": " + message);
         }
         else{
-            Main.pause("Извините, но этого звонка больше не существует(((");
+            ClientMain.pause("Извините, но этого звонка больше не существует(((");
         }
     }
 

@@ -3,7 +3,7 @@ package applogic.NetStuff.Net;
 import applogic.NetStuff.DataBaseWorks.DBConst;
 import applogic.NetStuff.DataBaseWorks.Hash.StringHasher;
 import applogic.NetStuff.DataBaseWorks.iQuery;
-import applogic.mainpkg.Main;
+import applogic.mainpkg.ClientMain;
 
 import java.io.Serializable;
 
@@ -93,10 +93,10 @@ public class User implements Serializable, iQuery {
     public int hashCode() {
         int prime = 5;
         int result = 18;
-        result = result * prime + Main.strHashCode(login) * (int) Math.pow(prime,2);
-        result = result * prime + Main.strHashCode(password) * (int) Math.pow(prime,3);
+        result = result * prime + ClientMain.strHashCode(login) * (int) Math.pow(prime,2);
+        result = result * prime + ClientMain.strHashCode(password) * (int) Math.pow(prime,3);
         if(email != null)
-            result = result * prime + Main.strHashCode(email) * (int) Math.pow(prime,4);
+            result = result * prime + ClientMain.strHashCode(email) * (int) Math.pow(prime,4);
         return result;
     }
 

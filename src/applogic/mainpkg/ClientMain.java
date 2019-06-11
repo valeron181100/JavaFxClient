@@ -9,6 +9,8 @@ import applogic.NetStuff.Net.ShutdownHandler;
 import applogic.NetStuff.Net.TransferPackage;
 import applogic.NetStuff.Net.User;
 import applogic.PhoneNTalks.*;
+import resources.logic.OldNewLogicConnector;
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -17,7 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class Main {
+public class ClientMain {
 
     public static final String DEFAULT_CHAR_SET = "UTF-8";
 
@@ -125,18 +127,39 @@ public class Main {
             baby.drink_alcohol();
             bosse.drink_alcohol();
 
-            Main.pause("Конец!!!");
+            ClientMain.pause("Конец!!!");
+        }
+    }
+    private static String line = "";
+
+    private static DatagramSocket clientSocket;
+    private static InetAddress IPAddress;
+    private static int port = OldNewLogicConnector.port;
+
+    private static Scanner scanner = new Scanner(System.in);
+    private static FileManager manager;
+    private static final boolean[] isConnected = {true};
+    private static int previousCmdId = 0;
+    private static User user = new User();
+
+    static {
+        manager = new FileManager("file.xml");
+        try {
+            clientSocket = new DatagramSocket();
+            IPAddress = InetAddress.getByName(OldNewLogicConnector.ipAddress);
+        } catch (SocketException | UnknownHostException e) {
+            System.err.println(e.getMessage());
         }
     }
 
     public Startingprogramm program;
 
-    public Main(){
+    public ClientMain(){
         program = new Startingprogramm();
     }
 
     public  static void main(String[] args) throws IOException {
-        if(args.length == 0){
+        /*if(args.length == 0){
             System.out.println("Введите адресс и порт в соответствующем порядке!");
             System.exit(0);
         }
@@ -144,20 +167,8 @@ public class Main {
         if(args.length == 1){
             System.out.println("Введите порт!");
             System.exit(0);
-        }
-
-        BufferedReader inFromUser =
-                new BufferedReader(new InputStreamReader(System.in));
-        DatagramSocket clientSocket = new DatagramSocket();
-        InetAddress IPAddress = InetAddress.getByName(args[0]);
-        int port = Integer.parseInt(args[1]);
+        }*/
         clientSocket.setSoTimeout(2000);
-        Scanner scanner = new Scanner(System.in);
-        FileManager manager = new FileManager("file.xml");
-        final boolean[] isConnected = {true};
-        String line = "";
-        int previousCmdId = 0;
-        User user = new User();
         Runtime.getRuntime().addShutdownHook(new ShutdownHandler(user, clientSocket, IPAddress, port));
         //System.out.println("Введите команду help для получения полного списка команд.");
         while (true) {
@@ -252,7 +263,7 @@ public class Main {
                         if (user.isLoggedIn())
                             if(line.trim().equals("load"))
                                 tpkg = new TransferPackage(666, line,
-                                        null, manager.getXmlFromFile().getBytes(Main.DEFAULT_CHAR_SET));
+                                        null, manager.getXmlFromFile().getBytes(ClientMain.DEFAULT_CHAR_SET));
                             else
                                 tpkg = new TransferPackage(666, line, null);
                     } else {
@@ -270,12 +281,12 @@ public class Main {
                         else{
                             if(line.equals("help") | line.split(" ")[0].equals("change_def_file_path")){
                                 tpkg = new TransferPackage(666, line,
-                                        null, CollectionManager.collectionStringXML.getBytes(Main.DEFAULT_CHAR_SET));
+                                        null, CollectionManager.collectionStringXML.getBytes(ClientMain.DEFAULT_CHAR_SET));
                             }
                             else
                             if(line.trim().equals("load"))
                                 tpkg = new TransferPackage(666, line,
-                                        null, manager.getXmlFromFile().getBytes(Main.DEFAULT_CHAR_SET));
+                                        null, manager.getXmlFromFile().getBytes(ClientMain.DEFAULT_CHAR_SET));
                             else
                                 tpkg = new TransferPackage(666, line, null);
                         }
@@ -314,7 +325,7 @@ public class Main {
                             case 5:
                                 previousCmdId = recievedPkg.getId();
                                 System.out.println(recievedPkg.getCmdData());
-                                System.out.println(new String(recievedPkg.getAdditionalData(), Main.DEFAULT_CHAR_SET));
+                                System.out.println(new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET));
                                 break;
                             case 9:
                                 previousCmdId = recievedPkg.getId();
@@ -331,9 +342,9 @@ public class Main {
                                 break;
                             case 6:
                                 previousCmdId = recievedPkg.getId();
-                                line = new String(recievedPkg.getAdditionalData(), Main.DEFAULT_CHAR_SET);
+                                line = new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET);
                                 System.out.println(line);
-                                if(new File(new String(recievedPkg.getAdditionalData(), Main.DEFAULT_CHAR_SET)).exists())
+                                if(new File(new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET)).exists())
                                     continue;
                                 else
                                     break;
@@ -342,20 +353,20 @@ public class Main {
                                 System.out.println("Ошибка: ");
                                 System.out.print(recievedPkg.getCmdData());
                                 if (recievedPkg.getAdditionalData() != null) {
-                                    System.out.print(new String(recievedPkg.getAdditionalData(), Main.DEFAULT_CHAR_SET));
+                                    System.out.print(new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET));
                                 }
                                 System.out.println();
                                 break;
                             case 10:
                                 previousCmdId = recievedPkg.getId();
                                 System.out.println(recievedPkg.getCmdData());
-                                String filePath = new String(recievedPkg.getAdditionalData(), Main.DEFAULT_CHAR_SET);
+                                String filePath = new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET);
                                 manager.setDefaultCollectionFilePath(filePath);
                                 break;
                             case 8:
                                 previousCmdId = recievedPkg.getId();
                                 System.out.println(recievedPkg.getCmdData());
-                                new Main().program.start(new HashSet<>(recievedPkg.getData().collect(Collectors.toList())));
+                                new ClientMain().program.start(new HashSet<>(recievedPkg.getData().collect(Collectors.toList())));
                                 break;
                             case 101:
                                 TransferPackage transferPackage = new TransferPackage(666, "login {" + user.getLogin() + "} {" + user.getUncryptedPassword() + "}", null);

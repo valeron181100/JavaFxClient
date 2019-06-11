@@ -1,15 +1,16 @@
 package applogic.Humanlike;
 
-import applogic.Buildings.*;
-import applogic.Clothes.*;
-import applogic.Enums.*;
-import applogic.Interfaces.*;
-import applogic.PhoneNTalks.Phone;
+import applogic.Buildings.Position;
+import applogic.Buildings.Room;
+import applogic.Clothes.Costume;
+import applogic.Enums.BodyType;
+import applogic.Enums.Color;
+import applogic.Enums.Mood;
+import applogic.Interfaces.IPhone;
 import applogic.PhoneNTalks.Talk;
-import applogic.mainpkg.Main;
+import applogic.mainpkg.ClientMain;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 public abstract class Human {
     private String Name;
@@ -42,7 +43,7 @@ public abstract class Human {
         costume = new Costume();
         mood = Mood.Good;
 
-        Main.pause("Человек под именем " + this.getName() + " создан.");
+        ClientMain.pause("Человек под именем " + this.getName() + " создан.");
     }
     public Human(String name, boolean is_hair, int years,
                  boolean is_man, BodyType bodyType, boolean isDrink,
@@ -58,7 +59,7 @@ public abstract class Human {
         this.humor_lvl = humor_lvl;
         costume = new Costume();
         mood = Mood.Good;
-        Main.pause("Человек под именем " + this.getName() + " создан.");
+        ClientMain.pause("Человек под именем " + this.getName() + " создан.");
     }
 
     public String getName(){
@@ -83,7 +84,7 @@ public abstract class Human {
 
     public void changeHairColor(Color color){
         HairColor = color;
-        Main.pause(String.format("Цвет волос у персонажа %s был изменён на %s",
+        ClientMain.pause(String.format("Цвет волос у персонажа %s был изменён на %s",
                 this.toString(), this.HairColor.toString()));
     }
 
@@ -93,7 +94,7 @@ public abstract class Human {
 
     public void changeBodyType(BodyType type){
         bodyType = type;
-        Main.pause(String.format("Тело персонажа %s изменёно на %s",
+        ClientMain.pause(String.format("Тело персонажа %s изменёно на %s",
                 this.toString(), type.toString()));
     }
 
@@ -109,11 +110,11 @@ public abstract class Human {
             int rand_index = first_border + (int) (Math.random() *
                     ((second_border - first_border) + 1));
             mood = moods[rand_index];
-            Main.pause("Персонаж "+ this.toString() + " выпил алкоголь.");
-            Main.pause("Настроение персонажа " + this.toString() + " было изменено на " + this.getMood().toString());
+            ClientMain.pause("Персонаж "+ this.toString() + " выпил алкоголь.");
+            ClientMain.pause("Настроение персонажа " + this.toString() + " было изменено на " + this.getMood().toString());
         }
         else{
-            Main.pause(String.format("Персонаж %s не пьёт.", this.toString()));
+            ClientMain.pause(String.format("Персонаж %s не пьёт.", this.toString()));
         }
     }
 
@@ -123,7 +124,7 @@ public abstract class Human {
 
     public void change_mood(Mood type){
         mood = type;
-        Main.pause(String.format("Настроение персонажа %s было изменёно на %s",
+        ClientMain.pause(String.format("Настроение персонажа %s было изменёно на %s",
                 this.toString(), type.toString()));
     }
 
@@ -134,7 +135,7 @@ public abstract class Human {
         int rand_index = first_border + (int) (Math.random() *
                 ((second_border - first_border) + 1));
         mood = moods[rand_index];
-        Main.pause(String.format("Настроение персонажа %s было изменёно на %s",
+        ClientMain.pause(String.format("Настроение персонажа %s было изменёно на %s",
                 this.toString(), mood.toString()));
     }
 
@@ -145,7 +146,7 @@ public abstract class Human {
         int rand_index = first_border + (int) (Math.random() *
                 ((second_border - first_border) + 1));
         mood = moods[rand_index];
-        Main.pause(String.format("Настроение персонажа %s было изменёно на %s",
+        ClientMain.pause(String.format("Настроение персонажа %s было изменёно на %s",
                 this.toString(), mood.toString()));
     }
 
@@ -155,7 +156,7 @@ public abstract class Human {
 
     public void set_humorlvl(int lvl){
         humor_lvl = lvl;
-        Main.pause(String.format("Уровень юмора персонажа %s был изменён на %s",
+        ClientMain.pause(String.format("Уровень юмора персонажа %s был изменён на %s",
                 this.toString(), lvl));
     }
 
@@ -191,12 +192,12 @@ public abstract class Human {
             position.getRoom().rmPeople(this);
             position.setRoom(position.getHouse().getLobby());
             position.getRoom().add_people(this);
-            Main.pause(this.toString() + " перешёл в " + position.getRoom().toString());
+            ClientMain.pause(this.toString() + " перешёл в " + position.getRoom().toString());
             if (position.getHouse().getLobby().get_rooms().contains(room)){
                 position.getRoom().rmPeople(this);
                 position.setRoom(room);
                 position.getRoom().add_people(this);
-                Main.pause(this.toString() + " перешёл в " + position.getRoom().toString());
+                ClientMain.pause(this.toString() + " перешёл в " + position.getRoom().toString());
             }
         }
         else{
@@ -204,13 +205,13 @@ public abstract class Human {
                 position.getRoom().rmPeople(this);
                 position.setRoom(room);
                 position.getRoom().add_people(this);
-                Main.pause(this.toString() + " перешёл в " + position.getRoom().toString());
+                ClientMain.pause(this.toString() + " перешёл в " + position.getRoom().toString());
             }
         }
     }
 
     public boolean search_here(Human human){
-        Main.pause(String.format("%s: Ищу %s", this.toString(), human.toString()));
+        ClientMain.pause(String.format("%s: Ищу %s", this.toString(), human.toString()));
         ArrayList<Human> people_here = this.position.getRoom().get_people();
         Talk monolog = new Talk(this.get_position().getHouse(),
                 this.get_position().getRoom(), this);
@@ -232,7 +233,7 @@ public abstract class Human {
 
     public void set_costume(Costume costume){
         this.costume = costume;
-        Main.pause(String.format("Костюм персонажа %s было изменёно на %s",
+        ClientMain.pause(String.format("Костюм персонажа %s было изменёно на %s",
                 this.toString(), costume.toString()));
     }
 

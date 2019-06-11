@@ -3,7 +3,7 @@ package applogic.FileSystem;
 import applogic.Clothes.Costume;
 import applogic.NetStuff.Net.TransferPackage;
 
-import applogic.mainpkg.Main;
+import applogic.mainpkg.ClientMain;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -62,7 +62,7 @@ public enum Command {
             output += p.toString() + "\t";
         }
 
-        command.setData(Stream.of(new TransferPackage(2, "Команда выполнена.",null, output.getBytes(Main.DEFAULT_CHAR_SET))));
+        command.setData(Stream.of(new TransferPackage(2, "Команда выполнена.",null, output.getBytes(ClientMain.DEFAULT_CHAR_SET))));
 
         System.out.println("Команда выполнена.");
     }),
@@ -97,7 +97,7 @@ public enum Command {
         }
     }),
     LOAD((command,manager, data)->{
-        data = Stream.of(new TransferPackage(4, "Команда выполнена.", null, "Load collection to server".getBytes(Main.DEFAULT_CHAR_SET)));
+        data = Stream.of(new TransferPackage(4, "Команда выполнена.", null, "Load collection to server".getBytes(ClientMain.DEFAULT_CHAR_SET)));
         System.out.println("Команда выполнена.");
     }),
     INFO((command,transferPackage, data)->{
@@ -118,18 +118,18 @@ public enum Command {
                             "Тип коллекции: %s \nТип элементов коллекции: %s\nДата инициализации: %s\nКоличество элементов: %s\nРазмер: %s байт\n",
                             collection.getClass().getName(),
                             "Clothes.Costume", new Date().toString(), collection.size(), byteObject.toByteArray().length
-                    ).getBytes(Main.DEFAULT_CHAR_SET)));
+                    ).getBytes(ClientMain.DEFAULT_CHAR_SET)));
 
         } catch (IOException e) {
             data = Stream.of(new TransferPackage(-1, "Команда выполнена.",null,
-            "Ошибка при определении размера памяти коллекции.".getBytes(Main.DEFAULT_CHAR_SET)));
+            "Ошибка при определении размера памяти коллекции.".getBytes(ClientMain.DEFAULT_CHAR_SET)));
         }
         System.out.println("Команда выполнена.");
     }),
     IMPORT((command,transferPackage, data)->{
         String path = "";
         for(Object s : data.toArray()) path += s.toString();
-        data = Stream.of(new TransferPackage(601, "Команда выполнена.", null, path.getBytes(Main.DEFAULT_CHAR_SET)));
+        data = Stream.of(new TransferPackage(601, "Команда выполнена.", null, path.getBytes(ClientMain.DEFAULT_CHAR_SET)));
         System.out.println("Первый этап импорта пройден.");
     }),
 
@@ -146,7 +146,7 @@ public enum Command {
         }
         else{
             data = Stream.of(new TransferPackage(-1, "Команда выполнена.",
-                    null, "Файл с коллекцией не найден.".getBytes(Main.DEFAULT_CHAR_SET)));
+                    null, "Файл с коллекцией не найден.".getBytes(ClientMain.DEFAULT_CHAR_SET)));
         }
         } catch (IOException e) {
             System.err.println(e.getMessage());
@@ -185,7 +185,7 @@ public enum Command {
             System.out.println("Команда выполнена.");
         }
         catch (JSONException e){
-            data = Stream.of(new TransferPackage(-1, "Команда выполнена.", null, "Ошибка: json-объект введён неверно.".getBytes(Main.DEFAULT_CHAR_SET)));
+            data = Stream.of(new TransferPackage(-1, "Команда выполнена.", null, "Ошибка: json-объект введён неверно.".getBytes(ClientMain.DEFAULT_CHAR_SET)));
         }
     }),
     START((command,transferPackage, data)->{
@@ -206,7 +206,7 @@ public enum Command {
         }
     }),
     EXIT((command,transferPackage, data)->{
-        command.setData(Stream.of(new TransferPackage(9, "Команда выполнена.", null, "null".getBytes(Main.DEFAULT_CHAR_SET))));
+        command.setData(Stream.of(new TransferPackage(9, "Команда выполнена.", null, "null".getBytes(ClientMain.DEFAULT_CHAR_SET))));
         System.out.println("Команда выполнена.");
     }),
     HELP((command,transferPackage, data)->{
@@ -230,7 +230,7 @@ public enum Command {
     CHANGE_DEF_FILE_PATH(((command,transferPackage, data) -> {
         String strData = "";
         for(Object s : data.toArray()) strData += s.toString();
-        data = Stream.of(new TransferPackage(10, "Команда выполнена.", null, strData.getBytes(Main.DEFAULT_CHAR_SET)));
+        data = Stream.of(new TransferPackage(10, "Команда выполнена.", null, strData.getBytes(ClientMain.DEFAULT_CHAR_SET)));
     })),
     TRIMTOMIN((command,transferPackage,data) -> {
         HashSet<Costume> collection = new HashSet<>();

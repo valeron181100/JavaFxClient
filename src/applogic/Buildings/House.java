@@ -4,12 +4,10 @@ import applogic.Humanlike.Human;
 import applogic.PhoneNTalks.Phone;
 import applogic.PhoneNTalks.PhoneStation;
 import applogic.PhoneNTalks.Talk;
-import applogic.mainpkg.Main;
+import applogic.mainpkg.ClientMain;
 
-import java.security.spec.ECField;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 public class House {
     private Room lobby;
@@ -31,7 +29,7 @@ public class House {
             r.set_house(this);
         }
         station = new PhoneStation();
-        Main.pause("Дом создан.");
+        ClientMain.pause("Дом создан.");
     }
 
     public PhoneStation getStation() {
@@ -55,7 +53,7 @@ public class House {
             p.set_position(pos);
             p.setPhone(new Phone(p.get_position().getHouse().getStation(), p));
         }
-        Main.pause("Люди добавлены в дом.");
+        ClientMain.pause("Люди добавлены в дом.");
     }
 
     public ArrayList<Human> get_people() {

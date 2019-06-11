@@ -1,7 +1,7 @@
 package applogic.Humanlike;
 
 import applogic.Enums.*;
-import applogic.mainpkg.Main;
+import applogic.mainpkg.ClientMain;
 
 import java.util.concurrent.TimeUnit;
 
@@ -29,10 +29,10 @@ public abstract class FlyableHuman extends Human {
     }
 
     public void fly(){
-        Main.pause("Персонаж" + this.toString() + " взлетел.");
+        ClientMain.pause("Персонаж" + this.toString() + " взлетел.");
     }
 
     public void land(){
-        Main.pause("Персонаж" + this.toString() + " приземлился.");
+        ClientMain.pause("Персонаж" + this.toString() + " приземлился.");
     }
 }

@@ -1,5 +1,5 @@
 package applogic.NetStuff.DataBaseWorks.Hash;
-import applogic.mainpkg.Main;
+import applogic.mainpkg.ClientMain;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -18,7 +18,7 @@ public class StringHasher implements Serializable {
 
     public String getHash(String str){
         try {
-            byte[] bytes = digest.digest(str.getBytes(Main.DEFAULT_CHAR_SET));
+            byte[] bytes = digest.digest(str.getBytes(ClientMain.DEFAULT_CHAR_SET));
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < bytes.length; i++) {
                 builder.append(String.format("%2x", bytes[i]));
