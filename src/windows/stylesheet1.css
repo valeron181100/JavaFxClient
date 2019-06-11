@@ -1,0 +1,8 @@
+.macos_button_style {
+    -fx-effect: innershadow(gaussian, rgba(255, 255, 255, 0.452), 10, 0, 0, 8 );
+    -fx-background-radius: 5;
+    -fx-background-color: #1a87fe;
+    -fx-font-family: Helvetica Neue;
+    -fx-font-size: 14;
+    -fx-text-fill: white;
+}
