@@ -23,6 +23,7 @@ import val.bond.resources.models.CommandClickEvent;
 import val.bond.resources.models.CommandModel;
 import val.bond.resources.models.CostumeTemplate;
 import val.bond.resources.personalization.ColorTheme;
+import val.bond.windows.addCommandWindow.AddCommandWindow;
 
 
 public class GeneralWindow extends Application {
@@ -107,21 +108,6 @@ public class GeneralWindow extends Application {
         primaryStage.setMinHeight(800);
         primaryStage.setMinWidth(1300);
         primaryStage.setScene(scene);
-
-        /*new Thread(()->{
-            while (true){
-                byte[] receiveData = new byte[65536];
-                DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
-                try {
-                    ClientMain.clientSocket.receive(receivePacket);
-                    System.err.println("Чиляга принял пакет");
-                    TransferPackage recievedPkg = TransferPackage.restoreObject(new ByteArrayInputStream(receivePacket.getData()));
-                    if (recievedPkg.getId() == 156) {
-                        OldNewLogicConnector.showResponse.setValue(new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET));
-                    }
-                } catch (IOException e){ }
-            }
-        }).start();*/
 
         final CostumeTemplateGroup[] costumeTemplateGroup = new CostumeTemplateGroup[1];
 
@@ -210,6 +196,7 @@ public class GeneralWindow extends Application {
         commands[9].setOnMouseClickedEvent(commandClickEvent);
         commands[10].setOnMouseClickedEvent(commandClickEvent);
 
+        commands[0].setOnMouseClickedEvent(addCommandClickEvent);
         ///Setting up side panel effects
 
         GaussianBlur sidePanelBlur = new GaussianBlur();
@@ -263,10 +250,11 @@ public class GeneralWindow extends Application {
     });
 
     private CommandClickEvent addCommandClickEvent = (event -> {
-
-        //TODO: add click add window
-        CommandModel model = (CommandModel)event;
-        OldNewLogicConnector.commandLine.setValue(model.getCommandLine());
+        try {
+            new AddCommandWindow().start(new Stage());
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
     });
 
 

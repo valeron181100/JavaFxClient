@@ -1,5 +1,6 @@
 package val.bond.applogic.mainpkg;
 
+import javafx.application.Platform;
 import val.bond.applogic.Buildings.House;
 import val.bond.applogic.Buildings.HouseException;
 import val.bond.applogic.Buildings.Room;
@@ -142,17 +143,19 @@ public class ClientMain {
             ClientMain.pause("Конец!!!");
         }
     }
-    private static String line = "";
+    public static String line = "";
 
     public static DatagramSocket clientSocket;
-    private static InetAddress IPAddress;
-    private static int port = 0;
+    public static InetAddress IPAddress;
+    public static int port = 0;
 
-    private static Scanner scanner = new Scanner(System.in);
-    private static FileManager manager;
-    private static final boolean[] isConnected = {true};
-    private static int previousCmdId = 0;
-    private static User user = new User();
+    public static Scanner scanner = new Scanner(System.in);
+    public static FileManager manager;
+    public static final boolean[] isConnected = {true};
+    public static int previousCmdId = 0;
+    public static User user = new User();
+
+    private static boolean isReadyToRead = true;
 
     static {
         manager = new FileManager("file.xml");
@@ -184,6 +187,8 @@ public class ClientMain {
         Runtime.getRuntime().addShutdownHook(new ShutdownHandler(user, clientSocket, IPAddress, port));
         //System.out.println("Введите команду help для получения полного списка команд.");
 
+        Thread thread = new Thread(ClientMain::readFromServerCmd);
+        thread.start();
         OldNewLogicConnector.commandLine.addListener((observable, oldValue, newValue) -> {
             port = OldNewLogicConnector.port;
             try {
@@ -192,58 +197,57 @@ public class ClientMain {
                 System.err.println(e.getMessage());
             }
             line = newValue;
-            commandCycle();
+            while (!isReadyToRead) {
+                continue;
+            }
+            sendCmd();
             //Придется юзать рефлексию, чтобы по-тихому очистить значение OldNewLogicConnector.commandLine
 
         });
 
     }
 
+    public static void sendCmd(){
+        try {
+            TransferPackage tpkg = null;
 
-    public static String commandCycle(){
-        while (true) {
             try {
-                TransferPackage tpkg = null;
 
-                    try {
+                String loginRegex = "login \\{.+} \\{.+}";
 
-                        String loginRegex = "login \\{.+} \\{.+}";
+                if (previousCmdId == 6) {
+                    byte[] bytes;
+                    try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                         ObjectOutputStream dos = new ObjectOutputStream(baos)) {
+                        dos.writeObject(CollectionManager.getCollectionFromXML(manager.getXmlFromFile(line)));
+                        bytes = baos.toByteArray();
+                    }
+                    line = "I1A8S1D1F0G0H";
+                    tpkg = new TransferPackage(666, line,
+                            null, bytes);
+                } else {
 
-                        if(previousCmdId == 6) {
-                            byte[] bytes;
-                            try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                 ObjectOutputStream dos = new ObjectOutputStream(baos)) {
-                                dos.writeObject(CollectionManager.getCollectionFromXML(manager.getXmlFromFile(line)));
-                                bytes = baos.toByteArray();
-                            }
-                            line = "I1A8S1D1F0G0H";
-                            tpkg = new TransferPackage(666, line,
-                                    null, bytes);
+
+                    String input = null;
+                    ////
+                    //line = scanMultiLines(scanner);
+
+                    if (line.matches(loginRegex)) {
+                        //new ShutdownHandler(user, clientSocket, IPAddress, port).run();
+                        String[] logParts = line.split(" ");
+                        user.setLogin(logParts[1].substring(1, logParts[1].length() - 1));
+                        user.setPassword(logParts[2].substring(1, logParts[2].length() - 1));
+                        if (logParts.length == 4) {
+                            user.setEmail(logParts[3].substring(1, logParts[3].length() - 1));
+                            tpkg = new TransferPackage(110, "login {" + user.getLogin() + "} {" + user.getUncryptedPassword() + "} {" + user.getEmail() + "}", null);
+                        } else {
+                            tpkg = new TransferPackage(110, "login {" + user.getLogin() + "} {" + user.getUncryptedPassword() + "}", null);
                         }
-                        else {
+                    }
+                    input = line.split(" ")[0];
+                    ////
 
-
-                            String input = null;
-                            ////
-                            //line = scanMultiLines(scanner);
-
-                            if (line.matches(loginRegex)) {
-                                //new ShutdownHandler(user, clientSocket, IPAddress, port).run();
-                                String[] logParts = line.split(" ");
-                                user.setLogin(logParts[1].substring(1, logParts[1].length() - 1));
-                                user.setPassword(logParts[2].substring(1, logParts[2].length() - 1));
-                                if (logParts.length == 4) {
-                                    user.setEmail(logParts[3].substring(1, logParts[3].length() - 1));
-                                    tpkg = new TransferPackage(110, "login {" + user.getLogin() + "} {" + user.getUncryptedPassword() + "} {" + user.getEmail() + "}", null);
-                                }
-                                else{
-                                    tpkg = new TransferPackage(110, "login {" + user.getLogin() + "} {" + user.getUncryptedPassword() + "}", null);
-                                }
-                            }
-                            input = line.split(" ")[0];
-                            ////
-
-                            /// Блок кода разрешающий выполнение упомянутых в блоке комманд если файл не существует !!!!!!
+                    /// Блок кода разрешающий выполнение упомянутых в блоке комманд если файл не существует !!!!!!
                            /* if (!manager.isDefaultFileExists() && user.isLoggedIn()) {
                                 switch (input) {
                                     case "help":
@@ -256,51 +260,66 @@ public class ClientMain {
 
                                 }
                             }*/
-                        }
+                }
 
-                        if(!line.matches(loginRegex)) {
-                            if (line.equals("help") | line.split(" ")[0].equals("change_def_file_path")) {
-                                tpkg = new TransferPackage(666, line,
-                                        null, CollectionManager.collectionStringXML.getBytes(ClientMain.DEFAULT_CHAR_SET));
-                            } else if (line.trim().equals("load")) {
-                                String addbytes = manager.getXmlFromFile();
-                                if(addbytes == null) throw new SomethingWrongException("Файл с коллекцией отсутствует!");
-                                tpkg = new TransferPackage(666, line,
-                                        null, addbytes.getBytes(ClientMain.DEFAULT_CHAR_SET));
-                            }
-                            else
-                                tpkg = new TransferPackage(666, line, null);
-                            ///.....
-                        }
+                if (!line.matches(loginRegex)) {
+                    if (line.equals("help") | line.split(" ")[0].equals("change_def_file_path")) {
+                        tpkg = new TransferPackage(666, line,
+                                null, CollectionManager.collectionStringXML.getBytes(ClientMain.DEFAULT_CHAR_SET));
+                    } else if (line.trim().equals("load")) {
+                        String addbytes = manager.getXmlFromFile();
+                        if (addbytes == null) throw new SomethingWrongException("Файл с коллекцией отсутствует!");
+                        tpkg = new TransferPackage(666, line,
+                                null, addbytes.getBytes(ClientMain.DEFAULT_CHAR_SET));
+                    } else
+                        tpkg = new TransferPackage(666, line, null);
+                    ///.....
+                }
 
-                    } catch (SomethingWrongException e) {
-                        System.err.println(e.getMessage());
-                        break;
-                    }catch (NoSuchElementException e) {
-                        System.err.println("Завершение работы программы.");
-                        System.exit(0);
-                    }catch (FileNotFoundException e){
-                        System.err.println("Файл с коллекцией не найден.");
-                        break;
-                    }
-                    if (user.isLoggedIn())
-                        if(line.trim().equals("load"))
-                            tpkg = new TransferPackage(666, line,
-                                    null, manager.getXmlFromFile().getBytes(ClientMain.DEFAULT_CHAR_SET));
-                        else
-                            tpkg = new TransferPackage(666, line, null);
+            } catch (SomethingWrongException e) {
+                System.err.println(e.getMessage());
+
+            } catch (NoSuchElementException e) {
+                System.err.println("Завершение работы программы.");
+                System.exit(0);
+            } catch (FileNotFoundException e) {
+                System.err.println("Файл с коллекцией не найден.");
+
+            }
+            if (user.isLoggedIn())
+                if (line.trim().equals("load"))
+                    tpkg = new TransferPackage(666, line,
+                            null, manager.getXmlFromFile().getBytes(ClientMain.DEFAULT_CHAR_SET));
+                else
+                    tpkg = new TransferPackage(666, line, null);
 
 
-                tpkg.setUser(user);
+            tpkg.setUser(user);
                 /*if(!isConnected[0])
                     tpkg.setId(763);*/
-                byte[] sendData = tpkg.getBytes();
-                DatagramPacket sendingPkg = new DatagramPacket(sendData, sendData.length, IPAddress, port);
-                clientSocket.send(sendingPkg);
+            byte[] sendData = tpkg.getBytes();
+            DatagramPacket sendingPkg = new DatagramPacket(sendData, sendData.length, IPAddress, port);
+            clientSocket.send(sendingPkg);
+        }catch (Exception e){
+            System.err.println(e.getMessage());
+        }
+    }
+
+
+    public static void readFromServerCmd(){
+        boolean isServerShutedDown = false;
+        while (true) {
+            try {
+                //sendCmd()
+                if(!isConnected[0]){
+                    sendCmd();
+                }
 
                 byte[] receiveData = new byte[65536];
                 DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+                isReadyToRead = true;
                 clientSocket.receive(receivePacket);
+                isReadyToRead = false;
                 if (!isConnected[0])
                     System.out.println();
                 isConnected[0] = true;
@@ -308,10 +327,34 @@ public class ClientMain {
                 TransferPackage recievedPkg = TransferPackage.restoreObject(new ByteArrayInputStream(receivePacket.getData()));
                 if (recievedPkg != null) {
                     switch (recievedPkg.getId()) {
-                        case 11: if(recievedPkg.getId() == 11) OldNewLogicConnector.helpResponse.setValue(new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET));
-                        case 2: if(recievedPkg.getId() == 2) OldNewLogicConnector.showResponse.setValue(new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET));
-                        case 4: if(recievedPkg.getId() == 4) OldNewLogicConnector.loadResponse.setValue(new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET));
-                        case 5: if(recievedPkg.getId() == 5) OldNewLogicConnector.infoResponse.setValue(new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET));
+                        case 11: if(recievedPkg.getId() == 11) Platform.runLater(()-> {
+                            try {
+                                OldNewLogicConnector.helpResponse.setValue(new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET));
+                            } catch (UnsupportedEncodingException e) {
+                                System.err.println(e.getMessage());
+                            }
+                        });
+                        case 2: if(recievedPkg.getId() == 2) Platform.runLater(()-> {
+                            try {
+                                OldNewLogicConnector.showResponse.setValue(new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET));
+                            } catch (UnsupportedEncodingException e) {
+                                System.err.println(e.getMessage());
+                            }
+                        });
+                        case 4: if(recievedPkg.getId() == 4) Platform.runLater(()-> {
+                            try {
+                                OldNewLogicConnector.loadResponse.setValue(new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET));
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        });
+                        case 5: if(recievedPkg.getId() == 5) Platform.runLater(()-> {
+                            try {
+                                OldNewLogicConnector.infoResponse.setValue(new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET));
+                            } catch (UnsupportedEncodingException e) {
+                                e.printStackTrace();
+                            }
+                        });
                             previousCmdId = recievedPkg.getId();
                             System.out.println(recievedPkg.getCmdData());
                             System.out.println(new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET));
@@ -322,10 +365,10 @@ public class ClientMain {
                             System.out.println("Завершение работы программы.");
                             System.exit(0);
                             break;
-                        case 7: if(recievedPkg.getId() == 7) OldNewLogicConnector.addResponse.setValue(recievedPkg.getCmdData());
-                        case 3: if(recievedPkg.getId() == 3) OldNewLogicConnector.addIfMaxResponse.setValue(recievedPkg.getCmdData());
-                        case 1: if(recievedPkg.getId() == 1) OldNewLogicConnector.removeResponse.setValue(recievedPkg.getCmdData());
-                        case 601: if(recievedPkg.getId() == 601) OldNewLogicConnector.importResponse.setValue(recievedPkg.getCmdData());
+                        case 7: if(recievedPkg.getId() == 7) Platform.runLater(()->OldNewLogicConnector.addResponse.setValue(recievedPkg.getCmdData()));
+                        case 3: if(recievedPkg.getId() == 3) Platform.runLater(()->OldNewLogicConnector.addIfMaxResponse.setValue(recievedPkg.getCmdData()));
+                        case 1: if(recievedPkg.getId() == 1) Platform.runLater(() -> OldNewLogicConnector.removeResponse.setValue(recievedPkg.getCmdData()));
+                        case 601: if(recievedPkg.getId() == 601) Platform.runLater(()->OldNewLogicConnector.importResponse.setValue(recievedPkg.getCmdData()));
                             previousCmdId = recievedPkg.getId();
                             System.out.println(recievedPkg.getCmdData());
                             break;
@@ -343,18 +386,24 @@ public class ClientMain {
                             System.out.print(recievedPkg.getCmdData());
                             if (recievedPkg.getAdditionalData() != null) {
                                 System.out.print(new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET));
-                                OldNewLogicConnector.errorResponse.setValue("Ошибка: \n" + recievedPkg.getCmdData() + "\n" + new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET));
-                                return "Ошибка: \n" + recievedPkg.getCmdData() + "\n" + new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET);
+                                Platform.runLater(()-> {
+                                    try {
+                                        OldNewLogicConnector.errorResponse.setValue("Ошибка: \n" + recievedPkg.getCmdData() + "\n" + new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET));
+                                    } catch (UnsupportedEncodingException e) {
+                                        System.err.println(e.getMessage());
+                                    }
+                                });
+
                             }
                             System.out.println();
-                            OldNewLogicConnector.errorResponse.setValue("Ошибка: \n" + recievedPkg.getCmdData());
-                            return "Ошибка: \n" + recievedPkg.getCmdData();
+                            Platform.runLater(()->OldNewLogicConnector.errorResponse.setValue("Ошибка: \n" + recievedPkg.getCmdData()));
+
                         case 10:
                             previousCmdId = recievedPkg.getId();
                             System.out.println(recievedPkg.getCmdData());
                             String filePath = new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET);
                             manager.setDefaultCollectionFilePath(filePath);
-                            OldNewLogicConnector.changeDefFileResponse.setValue(recievedPkg.getCmdData());
+                            Platform.runLater(()->OldNewLogicConnector.changeDefFileResponse.setValue(recievedPkg.getCmdData()));
                             break;
                         case 8:
                             previousCmdId = recievedPkg.getId();
@@ -371,14 +420,12 @@ public class ClientMain {
                             if(recievedPkg.getAdditionalData()[0] == 1){
                                 user.setLoggedIn(true);
                                 System.out.println("Вы успешно зарегистрированы!");
-                                OldNewLogicConnector.authResponse.setValue("Ok");
-                                return "Вы успешно зарегистрированы!";
+                                Platform.runLater(()->OldNewLogicConnector.authResponse.setValue("Ok"));
                             }
                             if(recievedPkg.getAdditionalData()[0] == 2){
                                 user.setLoggedIn(true);
                                 System.out.println("Вы успешно авторизированы!");
-                                OldNewLogicConnector.authResponse.setValue("Ok");
-                                return "Вы успешно авторизированы!";
+                                Platform.runLater(()->OldNewLogicConnector.authResponse.setValue("Ok"));
 
                             }
 
@@ -386,22 +433,24 @@ public class ClientMain {
                         case 12:
                             manager.writeCollection(CollectionManager.getCollectionFromBytes(recievedPkg.getAdditionalData()));
                             System.out.println(recievedPkg.getCmdData());
-                            OldNewLogicConnector.saveResponse.setValue(recievedPkg.getCmdData());
+                            Platform.runLater(()->OldNewLogicConnector.saveResponse.setValue(recievedPkg.getCmdData()));
+                        case 9999:
+                            isServerShutedDown = true;
+                            break;
                     }
-
-
                 } else {
                     System.out.println("Ничего не пришло!");
                 }
                 line = "";
-                break;
 
             } catch (SocketTimeoutException e) {
-                if(isConnected[0])
-                    System.out.println("Соединение с сервером было внезапно разорвано! Попытка соединения");
-                else
-                    System.out.print(".");
-                isConnected[0] = false;
+                if(isServerShutedDown) {
+                    if (isConnected[0])
+                        System.out.println("Соединение с сервером было внезапно разорвано! Попытка соединения");
+                    else
+                        System.out.print(".");
+                    isConnected[0] = false;
+                }
             }
             catch (Exception e){
                 System.err.println(e.getMessage());
@@ -409,7 +458,6 @@ public class ClientMain {
             int k = 0;
         }
 
-        return "";
     }
 
     public static ArrayList<String> findMatches(String patterStr, String text){
