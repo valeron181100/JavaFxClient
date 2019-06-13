@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.GaussianBlur?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import java.net.URL?>
+<GridPane fx:id="MainGridPane" alignment="CENTER" prefHeight="340.0" prefWidth="480.0"
+          xmlns="http://javafx.com/javafx/8.0.172" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="val.bond.windows.authWindowPackage.AuthController">
+   <stylesheets>
+      <URL value="@../stylesheet1.css" />
+   </stylesheets>
+
+   <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints maxHeight="295.0" minHeight="10.0" prefHeight="137.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="202.0" minHeight="10.0" prefHeight="170.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="187.0" minHeight="10.0" prefHeight="103.0" vgrow="SOMETIMES" />
+   </rowConstraints>
+   <children>
+      <ImageView fitHeight="${MainGridPane.height}" fitWidth="${MainGridPane.width}" scaleX="3.0" scaleY="2.5" GridPane.halignment="CENTER" GridPane.rowSpan="3" GridPane.valignment="CENTER">
+         <image>
+            <Image url="@../../images/top.jpg" />
+         </image>
+         <effect>
+            <GaussianBlur radius="30" />
+         </effect>
+      </ImageView>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Label fx:id="HeadLabel" alignment="CENTER"  text="Выберите действие:" textAlignment="CENTER" textFill="#ffffffd9">
+               <font>
+                  <Font name="Helvetica Neue Light"/>
+               </font>
+               <effect>
+                  <DropShadow />
+               </effect>
+            </Label>
+         </children>
+      </HBox>
+      <TilePane fx:id="loginRegButtonTilePane" alignment="CENTER" hgap="${MainGridPane.width/10}" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #5757577e;" vgap="20.0" GridPane.rowIndex="1">
+         <children>
+            <Button fx:id="loginButton" contentDisplay="CENTER"
+                    minHeight="${MainGridPane.height/15}" minWidth="${MainGridPane.width/15}"
+                    mnemonicParsing="false" onAction="#OnLoginRegButtonClick" styleClass="macos_button_style" text="Войти" />
+            <Button fx:id="regButton" onAction="#OnLoginRegButtonClick"
+                    minHeight="${MainGridPane.height/15}" minWidth="${MainGridPane.width/15}"
+                    mnemonicParsing="false" styleClass="macos_button_style" text="Зарегистрироваться" />
+         </children>
+         <padding>
+            <Insets bottom="10.0" top="10.0" />
+         </padding>
+      </TilePane>
+      <VBox fx:id="regPanel" disable="true" opacity="0.0" spacing="10" prefWidth="200" alignment="CENTER" GridPane.rowIndex="1">
+         <children>
+            <TextArea promptText="Логин" />
+            <TextArea promptText="Пароль" />
+            <TextArea promptText="Email" />
+            <TilePane alignment="CENTER" hgap="50.0" vgap="10.0">
+               <Button fx:id="okRegButton" contentDisplay="CENTER"
+                       minHeight="${MainGridPane.height/15}" minWidth="${MainGridPane.width/15}"
+                       mnemonicParsing="false" styleClass="macos_button_style" text="Готово" />
+               <Button fx:id="cancelRegButton" onAction="#onCancelAuthButtonClick"
+                       minHeight="${MainGridPane.height/15}" minWidth="${MainGridPane.width/15}"
+                       mnemonicParsing="false" styleClass="macos_button_style" text="Отмена" />
+            </TilePane>
+         </children>
+         <padding>
+            <Insets right="150.0" left="150.0" top="10.0"/>
+         </padding>
+      </VBox>
+      <VBox fx:id="loginPanel" disable="true" opacity="0.0" spacing="10" prefWidth="200" alignment="CENTER" GridPane.rowIndex="1">
+         <children>
+            <TextArea fx:id="logLoginTA" promptText="Логин" />
+            <TextArea fx:id="logPasswordTA" promptText="Пароль" />
+            <TilePane alignment="CENTER" hgap="50.0" vgap="10.0">
+               <Button fx:id="okLogButton" contentDisplay="CENTER" onAction="#onOkLogButtonClick"
+                       minHeight="${MainGridPane.height/15}" minWidth="${MainGridPane.width/15}"
+                       mnemonicParsing="false" styleClass="macos_button_style" text="Готово" />
+               <Button fx:id="cancelLogButton" onAction="#onCancelAuthButtonClick"
+                       minHeight="${MainGridPane.height/15}" minWidth="${MainGridPane.width/15}"
+                       mnemonicParsing="false" styleClass="macos_button_style" text="Отмена" />
+            </TilePane>
+         </children>
+         <padding>
+            <Insets right="150.0" left="150.0" top="10.0"/>
+         </padding>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="10.0" top="10.0" />
+   </padding>
+</GridPane>
