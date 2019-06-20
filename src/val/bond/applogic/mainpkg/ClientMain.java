@@ -1,6 +1,8 @@
 package val.bond.applogic.mainpkg;
 
 import javafx.application.Platform;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import val.bond.applogic.Buildings.House;
 import val.bond.applogic.Buildings.HouseException;
 import val.bond.applogic.Buildings.Room;
@@ -20,6 +22,8 @@ import val.bond.applogic.NetStuff.Net.User;
 import val.bond.applogic.PhoneNTalks.PhoneCall;
 import val.bond.applogic.PhoneNTalks.Talk;
 import val.bond.resources.logic.OldNewLogicConnector;
+import val.bond.windows.loadingWindow.LoadingWindow;
+import val.bond.windows.mainWindow.GeneralWindow;
 
 import java.io.*;
 import java.net.*;
@@ -27,7 +31,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -157,6 +160,8 @@ public class ClientMain {
 
     private static boolean isReadyToRead = true;
 
+    private static String programmOutput = "";
+
     static {
         manager = new FileManager("file.xml");
         try {
@@ -200,7 +205,7 @@ public class ClientMain {
             while (!isReadyToRead) {
                 continue;
             }
-            sendCmd();
+            new Thread(()->sendCmd()).start();
             //Придется юзать рефлексию, чтобы по-тихому очистить значение OldNewLogicConnector.commandLine
 
         });
@@ -323,6 +328,8 @@ public class ClientMain {
                 if (!isConnected[0])
                     System.out.println();
                 isConnected[0] = true;
+                Platform.runLater(()->OldNewLogicConnector.isConnected.setValue(true));
+                isServerShutedDown = false;
                 System.err.println("Босс принял пакет!");
                 TransferPackage recievedPkg = TransferPackage.restoreObject(new ByteArrayInputStream(receivePacket.getData()));
                 if (recievedPkg != null) {
@@ -337,6 +344,7 @@ public class ClientMain {
                         case 2: if(recievedPkg.getId() == 2) Platform.runLater(()-> {
                             try {
                                 OldNewLogicConnector.showResponse.setValue(new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET));
+                                GeneralWindow.notificationOkCmdProperty.setValue(true);
                             } catch (UnsupportedEncodingException e) {
                                 System.err.println(e.getMessage());
                             }
@@ -344,6 +352,7 @@ public class ClientMain {
                         case 4: if(recievedPkg.getId() == 4) Platform.runLater(()-> {
                             try {
                                 OldNewLogicConnector.loadResponse.setValue(new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET));
+                                GeneralWindow.notificationOkCmdProperty.setValue(true);
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
                             }
@@ -353,6 +362,13 @@ public class ClientMain {
                                 OldNewLogicConnector.infoResponse.setValue(new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET));
                             } catch (UnsupportedEncodingException e) {
                                 e.printStackTrace();
+                            }
+                        });
+                        case 322:if(recievedPkg.getId() == 322) Platform.runLater(()-> {
+                            try {
+                                OldNewLogicConnector.showCostumeResponse.setValue(new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET));
+                            } catch (UnsupportedEncodingException e) {
+                                System.err.println(e.getMessage());
                             }
                         });
                             previousCmdId = recievedPkg.getId();
@@ -368,18 +384,11 @@ public class ClientMain {
                         case 7: if(recievedPkg.getId() == 7) Platform.runLater(()->OldNewLogicConnector.addResponse.setValue(recievedPkg.getCmdData()));
                         case 3: if(recievedPkg.getId() == 3) Platform.runLater(()->OldNewLogicConnector.addIfMaxResponse.setValue(recievedPkg.getCmdData()));
                         case 1: if(recievedPkg.getId() == 1) Platform.runLater(() -> OldNewLogicConnector.removeResponse.setValue(recievedPkg.getCmdData()));
-                        case 601: if(recievedPkg.getId() == 601) Platform.runLater(()->OldNewLogicConnector.importResponse.setValue(recievedPkg.getCmdData()));
+                        case 6: if(recievedPkg.getId() == 6) Platform.runLater(()->OldNewLogicConnector.importResponse.setValue(recievedPkg.getCmdData()));
                             previousCmdId = recievedPkg.getId();
                             System.out.println(recievedPkg.getCmdData());
+                            GeneralWindow.notificationOkCmdProperty.setValue(true);
                             break;
-                        case 6:
-                            previousCmdId = recievedPkg.getId();
-                            line = new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET);
-                            System.out.println(line);
-                            if(new File(new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET)).exists())
-                                continue;
-                            else
-                                break;
                         case -1:
                             previousCmdId = recievedPkg.getId();
                             System.out.println("Ошибка: ");
@@ -404,11 +413,14 @@ public class ClientMain {
                             String filePath = new String(recievedPkg.getAdditionalData(), ClientMain.DEFAULT_CHAR_SET);
                             manager.setDefaultCollectionFilePath(filePath);
                             Platform.runLater(()->OldNewLogicConnector.changeDefFileResponse.setValue(recievedPkg.getCmdData()));
+                            GeneralWindow.notificationOkCmdProperty.setValue(true);
                             break;
                         case 8:
                             previousCmdId = recievedPkg.getId();
                             System.out.println(recievedPkg.getCmdData());
+                            programmOutput = "";
                             new ClientMain().program.start(new HashSet<>(recievedPkg.getData().collect(Collectors.toList())));
+                            Platform.runLater(()->OldNewLogicConnector.startResponse.setValue(programmOutput));
                             break;
                         case 101:
                             TransferPackage transferPackage = new TransferPackage(666, "login {" + user.getLogin() + "} {" + user.getUncryptedPassword() + "}", null);
@@ -434,6 +446,7 @@ public class ClientMain {
                             manager.writeCollection(CollectionManager.getCollectionFromBytes(recievedPkg.getAdditionalData()));
                             System.out.println(recievedPkg.getCmdData());
                             Platform.runLater(()->OldNewLogicConnector.saveResponse.setValue(recievedPkg.getCmdData()));
+                            GeneralWindow.notificationOkCmdProperty.setValue(true);
                         case 9999:
                             isServerShutedDown = true;
                             break;
@@ -445,6 +458,21 @@ public class ClientMain {
 
             } catch (SocketTimeoutException e) {
                 if(isServerShutedDown) {
+
+                    if(OldNewLogicConnector.isConnected.getValue()){
+
+                            Platform.runLater(()-> {
+                                try {
+                                    Stage stage = new Stage();
+                                    stage.initModality(Modality.APPLICATION_MODAL);
+                                    new LoadingWindow().start(stage);
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
+                            });
+                    }
+                    Platform.runLater(()->OldNewLogicConnector.isConnected.setValue(false));
+
                     if (isConnected[0])
                         System.out.println("Соединение с сервером было внезапно разорвано! Попытка соединения");
                     else
@@ -488,12 +516,7 @@ public class ClientMain {
     }
 
     public static void pause(String message){
-        System.out.println(message);
-        try {
-            TimeUnit.MILLISECONDS.sleep(50);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        programmOutput += message + "\n";
     }
 
     public static int strHashCode(String str){

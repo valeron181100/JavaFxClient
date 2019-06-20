@@ -78,8 +78,8 @@
       </VBox>
       <VBox fx:id="loginPanel" disable="true" opacity="0.0" spacing="10" prefWidth="200" alignment="CENTER" GridPane.rowIndex="1">
          <children>
-            <TextArea fx:id="logLoginTA" promptText="Логин" />
-            <TextArea fx:id="logPasswordTA" promptText="Пароль" />
+            <TextArea text="valeron181100" fx:id="logLoginTA" promptText="Логин" />
+            <TextArea text="va181100" fx:id="logPasswordTA" promptText="Пароль" />
             <TilePane alignment="CENTER" hgap="50.0" vgap="10.0">
                <Button fx:id="okLogButton" contentDisplay="CENTER" onAction="#onOkLogButtonClick"
                        minHeight="${MainGridPane.height/15}" minWidth="${MainGridPane.width/15}"

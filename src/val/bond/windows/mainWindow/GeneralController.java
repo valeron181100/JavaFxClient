@@ -37,7 +37,7 @@ public class GeneralController {
 
     private boolean isSidePanelOpen = false;
 
-    private Interpolator exponentialEaseOutInterpolator = new Interpolator() {
+    public static Interpolator exponentialEaseOutInterpolator = new Interpolator() {
         @Override
         protected double curve(double t) {
             return (t == 1.0) ? 1.0 : 1 - Math.pow(2.0, -10 * t);

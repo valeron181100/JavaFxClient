@@ -1,39 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.effect.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
 <GridPane fx:id="generalGridPane" xmlns="http://javafx.com/javafx/8.0.172" xmlns:fx="http://javafx.com/fxml/1" fx:controller="val.bond.windows.mainWindow.GeneralController">
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
    </columnConstraints>
    <rowConstraints>
-      <RowConstraints minHeight="10.0" prefHeight="50.0" maxHeight="50.0" vgrow="NEVER"/>
+      <RowConstraints maxHeight="50.0" minHeight="10.0" prefHeight="50.0" vgrow="NEVER" />
       <RowConstraints minHeight="10.0" prefHeight="${generalGridPane.height - 50.0}" vgrow="ALWAYS" />
    </rowConstraints>
    <children>
        <ToolBar fx:id="appToolBar" prefHeight="40.0">
         <items>
-            <Button mnemonicParsing="false" onAction="#MenuButtonClick" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: #0ab2f5;" text="">
+            <Button fx:id="menuButton" mnemonicParsing="false" onAction="#MenuButtonClick" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: #0ab2f5;" text="">
                <font>
                   <Font name="Segoe MDL2 Assets" size="16.0" />
                </font>
             </Button>
         </items>
-      </ToolBar >
-       <GridPane fx:id="rightContentGridPane" alignment="BOTTOM_CENTER" GridPane.rowIndex="1" style="-fx-border-color: black;">
+      </ToolBar>
+       <GridPane fx:id="rightContentGridPane" alignment="BOTTOM_CENTER" style="-fx-border-color: black;" GridPane.rowIndex="1">
            <columnConstraints>
                <ColumnConstraints hgrow="SOMETIMES" maxWidth="546.0" minWidth="10.0" prefWidth="270.0" />
-               <ColumnConstraints hgrow="SOMETIMES"  minWidth="10.0" prefWidth="822.0" />
+               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="822.0" />
            </columnConstraints>
            <rowConstraints>
-               <RowConstraints minHeight="10.0"  prefHeight="30.0" vgrow="ALWAYS" />
+               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
            </rowConstraints>
            <children>
-               <GridPane  fx:id="profileGridPane"  style="-fx-border-color: black;">
+               <GridPane fx:id="profileGridPane" style="-fx-border-color: black;">
                    <columnConstraints>
                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -43,10 +55,10 @@
                        <RowConstraints maxHeight="497.0" minHeight="10.0" prefHeight="497.0" vgrow="SOMETIMES" />
                    </rowConstraints>
                    <children>
-                       <HBox fx:id="profileHBox" style="-fx-border-color: black;" spacing="10" GridPane.columnSpan="2" GridPane.rowIndex="0" GridPane.halignment="CENTER">
-                           <VBox HBox.hgrow="ALWAYS" fx:id="avatarBox" alignment="CENTER">
+                       <HBox fx:id="profileHBox" spacing="10" style="-fx-border-color: black;" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="0">
+                           <VBox fx:id="avatarBox" alignment="CENTER" HBox.hgrow="ALWAYS">
                                <children>
-                               <ImageView fitHeight="${generalGridPane.height/5}"  fitWidth="${generalGridPane.width/5}" pickOnBounds="true" preserveRatio="true">
+                               <ImageView fitHeight="${generalGridPane.height/5}" fitWidth="${generalGridPane.width/5}" pickOnBounds="true" preserveRatio="true">
                                    <image>
                                        <Image url="@../../images/man.png" />
                                    </image>
@@ -59,7 +71,7 @@
                                    <Insets top="10.0" />
                                </GridPane.margin>
                            </VBox>
-                           <VBox fx:id="profileLabelsBox" HBox.hgrow="ALWAYS" prefHeight="200.0" alignment="CENTER" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="1">
+                           <VBox fx:id="profileLabelsBox" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="1" HBox.hgrow="ALWAYS">
                                <children>
                                    <Label fx:id="loginLabel" text="Логин:" wrapText="true">
                                        <font>
@@ -92,16 +104,14 @@
                                </GridPane.margin>
                            </VBox>
                        </HBox>
-                       <TilePane fx:id="commandTilePane" prefColumns="3" vgap="20" hgap="50" tileAlignment="CENTER"
-                                 GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.halignment="CENTER"
-                                    alignment="TOP_CENTER">
+                       <TilePane fx:id="commandTilePane" alignment="TOP_CENTER" hgap="50" prefColumns="3" tileAlignment="CENTER" vgap="20" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                            <GridPane.margin>
-                               <Insets top="10"/>
+                               <Insets top="10" />
                            </GridPane.margin>
                        </TilePane>
                    </children>
                </GridPane>
-               <GridPane fx:id="mainWorkSpaceGridPane" GridPane.vgrow="ALWAYS" style="-fx-border-color: black;" GridPane.columnIndex="1">
+               <GridPane fx:id="mainWorkSpaceGridPane" style="-fx-border-color: black;" GridPane.columnIndex="1" GridPane.vgrow="ALWAYS">
                    <columnConstraints>
                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                    </columnConstraints>
@@ -110,96 +120,113 @@
                        <RowConstraints minHeight="10.0" vgrow="ALWAYS" />
                    </rowConstraints>
                    <children>
-                       <BorderPane fx:id="editColBorderPane" minHeight="40.0" maxHeight="40" />
-                       <GridPane fx:id="mapWorkGridPane" disable="true" visible="false"
-                                 GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" GridPane.hgrow="ALWAYS">
-                           <Label text="Map Grid Pane" alignment="CENTER" GridPane.vgrow="ALWAYS" GridPane.hgrow="ALWAYS"
-                                  style="-fx-font-family: 'Helvetica Neue'; -fx-font-size: 25;"
-                                  textFill="white" GridPane.valignment="CENTER" GridPane.halignment="CENTER"/>
+                       <BorderPane fx:id="editColBorderPane" maxHeight="40" minHeight="40.0" />
+                       <GridPane fx:id="mapWorkGridPane" disable="true" visible="false" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+                           <Label alignment="CENTER" style="-fx-font-family: 'Helvetica Neue'; -fx-font-size: 25;" text="Map Grid Pane" textFill="white" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS" />
+                     <columnConstraints>
+                        <ColumnConstraints />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints />
+                     </rowConstraints>
                        </GridPane>
-                       <GridPane fx:id="settingsWorkGridPane" disable="true" visible="false"
-                                 GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" GridPane.hgrow="ALWAYS" >
-                           <Label text="Settings Grid Pane" alignment="CENTER" GridPane.vgrow="ALWAYS" GridPane.hgrow="ALWAYS"
-                                  style="-fx-font-family: 'Helvetica Neue'; -fx-font-size: 25;"
-                                  GridPane.valignment="CENTER" GridPane.halignment="CENTER"/>
+                       <GridPane fx:id="settingsWorkGridPane" disable="true" visible="false" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+                           <Label alignment="CENTER" style="-fx-font-family: 'Helvetica Neue'; -fx-font-size: 25;" text="Settings Grid Pane" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS" />
+                     <columnConstraints>
+                        <ColumnConstraints />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints />
+                     </rowConstraints>
                        </GridPane>
-                       <GridPane fx:id="collectionWorkGridPane" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS" GridPane.hgrow="ALWAYS">
-                           <TilePane fx:id="collectionTilePane" hgap="20.0" vgap="10.0" GridPane.vgrow="ALWAYS" GridPane.hgrow="ALWAYS">
+                       <GridPane fx:id="collectionWorkGridPane" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
+                           <TilePane fx:id="collectionTilePane" hgap="20.0" vgap="10.0" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
                                <GridPane.margin>
-                                   <Insets top="20" left="10"/>
+                                   <Insets left="10" top="20" />
                                </GridPane.margin>
                            </TilePane>
+                     <columnConstraints>
+                        <ColumnConstraints />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints />
+                     </rowConstraints>
                        </GridPane>
                    </children>
                </GridPane>
-               <StackPane fx:id="darkStackPane" onMouseClicked="#darkStackPaneClick" disable="true" opacity="0.0" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" style="-fx-background-color: black;"/>
-               <VBox fx:id="sidePanel" translateX="-350" GridPane.columnSpan="2" maxWidth="300" GridPane.halignment="LEFT" GridPane.valignment="TOP" GridPane.vgrow="ALWAYS"  >
+               <StackPane fx:id="darkStackPane" disable="true" onMouseClicked="#darkStackPaneClick" opacity="0.0" style="-fx-background-color: black;" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS" />
+               <VBox fx:id="sidePanel" maxWidth="300" translateX="-350" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.valignment="TOP" GridPane.vgrow="ALWAYS">
 
-                   <HBox fx:id="settingsSideHBox" onMouseClicked="#settingsSideHBoxMouseClick" alignment="CENTER_LEFT" spacing="50" GridPane.hgrow="ALWAYS" maxHeight="50" prefHeight="50">
-                       <ImageView  style="-fx-border-color: black;" fitHeight="30" fitWidth="30">
+                   <HBox fx:id="settingsSideHBox" alignment="CENTER_LEFT" maxHeight="50" onMouseClicked="#settingsSideHBoxMouseClick" prefHeight="50" spacing="50" GridPane.hgrow="ALWAYS">
+                       <ImageView fitHeight="30" fitWidth="30" style="-fx-border-color: black;">
                            <image>
-                               <Image url="@../../images/settings_icon.png"/>
+                               <Image url="@../../images/settings_icon.png" />
                            </image>
                        </ImageView>
                        <Label alignment="CENTER" text="Настройки" textFill="white">
                            <font>
-                               <Font name="Helvetica Neue" size="16"/>
+                               <Font name="Helvetica Neue" size="16" />
                            </font>
                            <effect>
-                               <DropShadow radius="10" blurType="GAUSSIAN"/>
+                               <DropShadow blurType="GAUSSIAN" radius="10" />
                            </effect>
                        </Label>
 
                        <padding>
-                           <Insets left="10.0"/>
+                           <Insets left="10.0" />
                        </padding>
                    </HBox>
 
-                   <HBox fx:id="mapSideHBox" onMouseClicked="#mapSideHBoxMouseClick" alignment="CENTER_LEFT" spacing="50" GridPane.hgrow="ALWAYS" maxHeight="50" prefHeight="50">
-                       <ImageView  style="-fx-border-color: black;" fitHeight="30" fitWidth="30">
+                   <HBox fx:id="mapSideHBox" alignment="CENTER_LEFT" maxHeight="50" onMouseClicked="#mapSideHBoxMouseClick" prefHeight="50" spacing="50" GridPane.hgrow="ALWAYS">
+                       <ImageView fitHeight="30" fitWidth="30" style="-fx-border-color: black;">
                            <image>
-                               <Image url="@../../images/map.png"/>
+                               <Image url="@../../images/map.png" />
                            </image>
                        </ImageView>
                        <Label alignment="CENTER" text="Карта элементов" textFill="white">
                            <font>
-                               <Font name="Helvetica Neue" size="16"/>
+                               <Font name="Helvetica Neue" size="16" />
                            </font>
                            <effect>
-                               <DropShadow radius="10" blurType="GAUSSIAN"/>
+                               <DropShadow blurType="GAUSSIAN" radius="10" />
                            </effect>
                        </Label>
 
                        <padding>
-                           <Insets left="10.0"/>
+                           <Insets left="10.0" />
                        </padding>
                    </HBox>
 
-                   <HBox fx:id="collectionSideHBox" onMouseClicked="#collectionSideHBoxMouseClick" alignment="CENTER_LEFT" spacing="50" GridPane.hgrow="ALWAYS" maxHeight="50" prefHeight="50">
-                       <ImageView  style="-fx-border-color: black;" fitHeight="30" fitWidth="30">
+                   <HBox fx:id="collectionSideHBox" alignment="CENTER_LEFT" maxHeight="50" onMouseClicked="#collectionSideHBoxMouseClick" prefHeight="50" spacing="50" GridPane.hgrow="ALWAYS">
+                       <ImageView fitHeight="30" fitWidth="30" style="-fx-border-color: black;">
                            <image>
-                               <Image url="@../../images/blazer.png"/>
+                               <Image url="@../../images/blazer.png" />
                            </image>
                        </ImageView>
                        <Label alignment="CENTER" text="Коллекция" textFill="white">
                            <font>
-                               <Font name="Helvetica Neue" size="16"/>
+                               <Font name="Helvetica Neue" size="16" />
                            </font>
                            <effect>
-                               <DropShadow radius="10" blurType="GAUSSIAN"/>
+                               <DropShadow blurType="GAUSSIAN" radius="10" />
                            </effect>
                        </Label>
 
                        <padding>
-                           <Insets left="10.0"/>
+                           <Insets left="10.0" />
                        </padding>
                    </HBox>
 
                    <effect>
-                       <DropShadow blurType="GAUSSIAN" radius="20" offsetY="15"/>
+                       <DropShadow blurType="GAUSSIAN" offsetY="15" radius="20" />
                    </effect>
                </VBox>
            </children>
        </GridPane>
+       <VBox fx:id="costumeClickPane" opacity="0.0" GridPane.halignment="CENTER" GridPane.rowSpan="2">
+       </VBox>
+       <BorderPane fx:id="notificationBorderPane" disable="true" GridPane.hgrow="ALWAYS" GridPane.rowSpan="2" GridPane.vgrow="ALWAYS" />
+       <StackPane fx:id="infoPanelStackPane" disable="true" GridPane.hgrow="ALWAYS" GridPane.rowSpan="2" GridPane.vgrow="ALWAYS" />
+
    </children>
 </GridPane>

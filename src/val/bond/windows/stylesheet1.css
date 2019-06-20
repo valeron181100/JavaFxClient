@@ -6,3 +6,10 @@
     -fx-font-size: 14;
     -fx-text-fill: white;
 }
+
+.close_info_panel_button_style {
+    -fx-background-color: darkGray;
+    -fx-font-family: Helvetica Neue;
+    -fx-font-size: 14;
+    -fx-text-fill: black;
+}

@@ -43,6 +43,8 @@ public class CommandModel extends Parent {
 
     private ArrayList<CommandClickEvent> clickEvents;
 
+
+
     public CommandModel(int width, int height, String imagePath){
         label = new Label();
         init(width, height, imagePath);
@@ -135,6 +137,8 @@ public class CommandModel extends Parent {
 
         }));
     }
+
+
 
     protected ImageView getForegroundImage() {
         return foregroundImage;

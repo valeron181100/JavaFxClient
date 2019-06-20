@@ -1,5 +1,7 @@
 package val.bond.resources.logic;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import val.bond.applogic.NetStuff.Net.User;
 import val.bond.resources.customControlls.ObservableString;
 
@@ -19,8 +21,11 @@ public class OldNewLogicConnector {
     public static ObservableString showResponse = new ObservableString();
     public static ObservableString authResponse = new ObservableString();
     public static ObservableString errorResponse = new ObservableString();
+    public static ObservableString showCostumeResponse = new ObservableString();
 
+    public static String infoWindowConnetionStr = "";
 
+    public static BooleanProperty isConnected = new SimpleBooleanProperty(true);
 
 
     public static User currentUser = new User();

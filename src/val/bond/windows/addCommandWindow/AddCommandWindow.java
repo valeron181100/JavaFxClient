@@ -26,6 +26,18 @@ import val.bond.resources.customControlls.ToggleSwitch;
 import val.bond.resources.logic.OldNewLogicConnector;
 
 public class AddCommandWindow extends Application {
+
+    private boolean isSimpleAddCommand;
+
+    public AddCommandWindow(){
+        super();
+    }
+
+    public AddCommandWindow(boolean isSimpleAddCommand){
+        super();
+        this.isSimpleAddCommand = isSimpleAddCommand;
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public void start(Stage primaryStage) throws Exception {
@@ -266,10 +278,12 @@ public class AddCommandWindow extends Application {
                 );
 
                 Costume costume = new Costume(topclothes, downClothes, shoes, hat, underwear);
-
-                OldNewLogicConnector.commandLine.setValue("add {" + costume.getJson().toString() + "}");
+                if(isSimpleAddCommand)
+                    OldNewLogicConnector.commandLine.setValue("add {" + costume.getJson().toString() + "}");
+                else
+                    OldNewLogicConnector.commandLine.setValue("add_if_max {" + costume.getJson().toString() + "}");
                 primaryStage.close();
-            }catch (NumberFormatException e){
+            }catch (Exception e){
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Неверный формат!");
                 alert.setHeaderText("Введены не верные данные");

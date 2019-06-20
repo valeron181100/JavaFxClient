@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<?import javafx.geometry.Insets?>
+<AnchorPane fx:id="generalPane" xmlns="http://javafx.com/javafx/8.0.172" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ScrollPane prefHeight="${generalPane.height}" prefWidth="${generalPane.width}" style="-fx-background: #502828a4;">
+         <content>
+            <Label lineSpacing="5.0" maxWidth="${generalPane.width}" text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris sit amet lorem fermentum, tincidunt mi eget, consectetur felis. Morbi vehicula tempor tincidunt. Fusce aliquam mi sit amet vehicula mollis. Maecenas eget turpis risus. Aliquam non ullamcorper nisi. Proin maximus sed ex nec consequat. Praesent mollis mi purus, ac facilisis sem imperdiet sit amet. Cras varius massa at justo faucibus gravida. In eu dignissim purus, in vulputate arcu. Morbi eu nulla neque. Duis interdum elit sed egestas aliquet.Aliquam hendrerit turpis eros, et consequat augue ultrices sit amet. Donec porta eget metus in accumsan. Quisque venenatis sem nec hendrerit bibendum. Integer congue, metus ac porttitor interdum, quam augue fermentum felis, sed iaculis est felis a justo. Praesent vitae gravida elit. Nunc feugiat enim et lorem egestas, et maximus lectus accumsan. Morbi dui velit, sodales sit amet quam vel, blandit tempor ipsum. Maecenas et nulla quis velit egestas malesuada in et ipsum. Cras quis facilisis urna, sed ultricies eros. Maecenas pellentesque eget sem et rutrum. Nunc ornare, diam scelerisque maximus tempus, erat dui feugiat nunc, non dapibus lectus erat nec dui. Morbi pellentesque vestibulum egestas. Sed interdum tempor tempor. Cras maximus eleifend ligula, nec rutrum nisi vehicula eget. Donec aliquam eros a mauris lobortis volutpat. Phasellus ultricies, mi vel interdum varius, risus nibh bibendum urna, vel pellentesque felis quam vitae turpis.Vestibulum ut mauris non nunc tincidunt cursus sed et enim. Curabitur at risus sed elit fermentum finibus eu vel leo. Fusce posuere lectus vitae pharetra pulvinar. Aliquam a enim rutrum, egestas mauris sed, aliquam risus. Fusce vitae tempus magna. Fusce interdum viverra arcu cursus maximus. Etiam vel porta elit. Nullam sem diam, interdum in ligula porta, bibendum viverra ex. Aenean aliquet ultrices tellus sed tempus. Praesent vitae magna mi. Suspendisse non nunc lorem. Mauris convallis pellentesque nisl laoreet sodales. Phasellus finibus sit amet metus ac dictum. Sed at lobortis ex. Aliquam tristique, est eu fringilla consequat, lacus nulla sodales erat, quis suscipit urna nibh ut erat.Maecenas bibendum nunc vitae mi scelerisque tincidunt. Etiam vel arcu eu augue porttitor convallis vitae nec dui. Sed rutrum cursus diam, aliquet euismod lectus eleifend vel. Pellentesque est metus, lacinia a ligula non, malesuada vulputate quam. Aliquam cursus augue vel diam porta faucibus. Aenean quis diam feugiat tellus consequat tincidunt. Praesent pulvinar cursus tellus, eget hendrerit sapien. Morbi viverra neque et aliquam aliquam. Vivamus euismod nunc dolor, id lacinia leo sagittis ac. Suspendisse vel felis et dolor dapibus pharetra nec a turpis.Sed id nisl nec nibh lobortis pellentesque a in dolor. Nunc dapibus vel mauris ac iaculis. Donec a egestas orci, ac porta dui. Integer dignissim, justo et maximus tincidunt, dui turpis scelerisque enim, non bibendum erat turpis id erat. Aliquam vel tincidunt risus. Donec commodo sed odio vel facilisis. Nam ut dolor mauris. Nam fermentum dapibus lacus, vitae rutrum odio fringilla interdum. Nunc vulputate vitae diam at placerat. Aliquam eleifend molestie felis, ut euismod neque bibendum in. Aliquam vitae molestie tortor. Cras at nisl justo. Suspendisse nec fermentum metus. Morbi eget lacus vel est tincidunt gravida. Etiam dui dolor, molestie vel feugiat quis, tristique pharetra ligula." wrapText="true">
+               <font>
+                  <Font name="Times New Roman" size="14.0" />
+               </font>
+               <padding>
+                  <Insets top="20" right="20" bottom="20" left="20"/>
+               </padding>
+            </Label>
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>

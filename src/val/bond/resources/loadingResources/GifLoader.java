@@ -4,7 +4,7 @@ import javafx.scene.image.Image;
 
 public class GifLoader {
     private static Image loadingImg;
-    private static final String loadingGifPath = "file:F:\\IntelliJIdea\\Projects\\JavaFxProject\\val.bond.images\\loading.gif";
+    private static final String loadingGifPath = "@../../val/bond/images/loading.gif";
 
     public GifLoader(){
         loadingImg = new Image(loadingGifPath);

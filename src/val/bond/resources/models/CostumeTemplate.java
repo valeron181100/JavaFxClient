@@ -1,13 +1,12 @@
 package val.bond.resources.models;
 
-import javafx.animation.RotateTransition;
-import javafx.animation.ScaleTransition;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.geometry.Pos;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
@@ -26,10 +25,16 @@ public class CostumeTemplate extends CommandModel{
     private ImageView removeImageView;
     private ArrayList<CommandClickEvent> removeIconClickEvents;
 
+    private Pane clickGridPane;
+
+    private boolean isClickPaneConnected = false;
+    private boolean isClickPaneVisible = false;
+
     private GridPane generalGridPane;
     private int rotateSign;
     public CostumeTemplate(int width, int height, String costumeDataJson) {
         super(width, height, ImagePathConst.getCrownPng());
+
         JSONObject costumeData = new JSONObject(costumeDataJson);
         costumeName = costumeData.getString("costumeName");
         costumeId = costumeData.getInt("costumeId");
@@ -58,7 +63,16 @@ public class CostumeTemplate extends CommandModel{
         StackPane.setAlignment(removeImageView, Pos.TOP_RIGHT);
         stackPane.getChildren().add(removeImageView);
         getChildren().add(stackPane);
-
+        setOnMouseClickedEvent(event->{
+            if(isClickPaneConnected){
+                FadeTransition fadeTransition = new FadeTransition(Duration.millis(150), clickGridPane);
+                fadeTransition.setFromValue(0.0);
+                fadeTransition.setToValue(1.0);
+                fadeTransition.play();
+                clickGridPane.setDisable(false);
+                isClickPaneVisible = true;
+            }
+        });
         removeImageView.setOnMouseClicked(event -> {
             removeIconClickEvents.forEach(p -> p.clicked(this));
             ScaleTransition transition = new ScaleTransition(Duration.millis(25), removeImageView);
@@ -128,4 +142,27 @@ public class CostumeTemplate extends CommandModel{
         removeIconClickEvents.add(event);
     }
 
+
+    public void setClickPane(int height, int width, Pane clickPane) {
+        clickGridPane = clickPane;
+        clickGridPane.setMaxHeight(height);
+        clickGridPane.setPrefHeight(height);
+        clickGridPane.setMaxWidth(width);
+        clickGridPane.setPrefWidth(width);
+        clickGridPane.setMinHeight(height);
+        clickGridPane.setMinWidth(width);
+        clickGridPane.setOpacity(0);
+        clickGridPane.setDisable(true);
+        isClickPaneVisible = false;
+        isClickPaneConnected = true;
+    }
+
+    public void playDissappearClickPaneAnim(){
+        FadeTransition fadeTransition = new FadeTransition(Duration.millis(150), clickGridPane);
+        fadeTransition.setFromValue(1.0);
+        fadeTransition.setToValue(0.0);
+        fadeTransition.play();
+        clickGridPane.setDisable(true);
+        isClickPaneVisible = true;
+    }
 }

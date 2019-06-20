@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 public enum  ColorTheme {
     WHEAT("#faffd6", "#faffd6", "#f6fccc",
             "black","lightBlue", "mediumvioletred",
-            "#c3c997", "#8cb8ff", "#8cb8ff", Color.BLACK);
+            "#c3c997", "#8cb8ff", "#8cb8ff", Color.BLACK, "#faffd6");
 
     private String generalGridPaneColor;
     private String appToolBarColor;
@@ -17,9 +17,10 @@ public enum  ColorTheme {
     private String settingsSideHBoxColor;
     private String collectionSideHBoxColor;
     private Color textColor;
+    private String costumeClickPaneColor;
 
     ColorTheme(String generalGridPaneColor, String appToolBarColor, String profileGridPaneColor,String mapWorkGridPaneColor, String settingsWorkGridPaneColor, String collectionWorkGridPaneColor,
-               String sidePanelColor,String settingsSideHBoxColor,String collectionSideHBoxColor, Color textColor){
+               String sidePanelColor,String settingsSideHBoxColor,String collectionSideHBoxColor, Color textColor, String costumeClickPaneColor){
 
         this.generalGridPaneColor = generalGridPaneColor;
         this.appToolBarColor = appToolBarColor;
@@ -31,6 +32,7 @@ public enum  ColorTheme {
         this.settingsSideHBoxColor = settingsSideHBoxColor;
         this.collectionSideHBoxColor = collectionSideHBoxColor;
         this.textColor = textColor;
+        this.costumeClickPaneColor = costumeClickPaneColor;
 
     }
 
@@ -72,5 +74,9 @@ public enum  ColorTheme {
 
     public String getSidePanelColor() {
         return "-fx-background-color: " + sidePanelColor;
+    }
+
+    public String getCostumeClickPaneColor() {
+        return "-fx-background-color: " + costumeClickPaneColor;
     }
 }

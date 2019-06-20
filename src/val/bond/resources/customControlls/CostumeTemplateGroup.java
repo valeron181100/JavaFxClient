@@ -14,6 +14,9 @@ public class CostumeTemplateGroup {
 
     private ArrayList<CostumeTemplate> templates;
     private ArrayList<EventHandler<MouseEvent>> listeners;
+
+    private CostumeTemplate lastClicked;
+
     public CostumeTemplateGroup(int size, String serverResponse){
         templates = new ArrayList<>();
         listeners = new ArrayList<>();
@@ -31,6 +34,16 @@ public class CostumeTemplateGroup {
         });
 
         templates.forEach(p -> p.setLabel(p.getCostumeName()));
+
+        templates.forEach(p->{
+            p.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                lastClicked = (CostumeTemplate) event.getSource();
+            });
+        });
+    }
+
+    public CostumeTemplate getLastClicked() {
+        return lastClicked;
     }
 
     public ArrayList<CostumeTemplate> getTemplates() {
