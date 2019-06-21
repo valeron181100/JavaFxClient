@@ -9,6 +9,8 @@ import val.bond.resources.models.CommandClickEvent;
 import val.bond.resources.models.CostumeTemplate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CostumeTemplateGroup {
 
@@ -22,16 +24,22 @@ public class CostumeTemplateGroup {
         listeners = new ArrayList<>();
         JSONObject response = new JSONObject(serverResponse);
         JSONArray array = response.getJSONArray("array");
+        Map<String, String> usersColors = new HashMap<>();
         array.forEach(p -> {
+            JSONObject costumeData = (JSONObject)p;
+            CostumeTemplate template = new CostumeTemplate(size, size, costumeData.toString());
+            //template.setColor(Color.web(color.toString()));
+            templates.add(template);
+        });
+        templates.forEach(p->{
             StringBuilder color = new StringBuilder("#");
             for (int i = 0; i < 6; i++) {
                 color.append(Integer.toString((int) (Math.random() * 15), 16));
             }
-            JSONObject costumeData = (JSONObject)p;
-            CostumeTemplate template = new CostumeTemplate(size, size, costumeData.toString());
-            template.setColor(Color.web(color.toString()));
-            templates.add(template);
+            usersColors.put(p.getOwnerUser(), color.toString());
         });
+
+        templates.forEach(p->p.setColor(Color.web(usersColors.get(p.getOwnerUser()))));
 
         templates.forEach(p -> p.setLabel(p.getCostumeName()));
 

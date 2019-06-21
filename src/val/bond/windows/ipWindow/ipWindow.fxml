@@ -47,8 +47,8 @@
         </HBox>
         <VBox fx:id="loginPanel"  spacing="10" prefWidth="200" alignment="CENTER" GridPane.rowIndex="1">
             <children>
-                <TextArea fx:id="ipAddressTextArea" promptText="IP address" />
-                <TextArea fx:id="portTextArea" promptText="Port" />
+                <TextArea fx:id="ipAddressTextArea" text="localhost" promptText="IP address" />
+                <TextArea fx:id="portTextArea" text="4000" promptText="Port" />
                 <TilePane alignment="CENTER" hgap="50.0" vgap="10.0">
                     <Button fx:id="okLogButton" contentDisplay="CENTER" onAction="#onOkLogButtonClick"
                             minHeight="${MainGridPane.height/15}" minWidth="${MainGridPane.width/15}"

@@ -240,6 +240,7 @@ public class ClientMain {
                     if (line.matches(loginRegex)) {
                         //new ShutdownHandler(user, clientSocket, IPAddress, port).run();
                         String[] logParts = line.split(" ");
+                        user.setLoggedIn(false);
                         user.setLogin(logParts[1].substring(1, logParts[1].length() - 1));
                         user.setPassword(logParts[2].substring(1, logParts[2].length() - 1));
                         if (logParts.length == 4) {

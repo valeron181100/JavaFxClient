@@ -3,12 +3,12 @@ package val.bond.Testing;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import val.bond.applogic.Clothes.Costume;
+import val.bond.internalization.Props;
 
+import java.util.Properties;
 
 
 public class TestApp extends Application {
@@ -26,15 +26,18 @@ public class TestApp extends Application {
         primaryStage.setMinWidth(1300);
         primaryStage.setScene(scene);
 
-        Button button = new Button("Click me!");
-        button.getStyleClass().add("macos_button_style");
-        button.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+        Props.loadProps("hu_HU");
 
-        });
+        Properties properties = Props.getProps();
 
-        root.getChildren().addAll(button);
 
-        Costume costume = new Costume();
+
+        Label label = new Label(properties.getProperty("login"));
+
+        root.getChildren().add(label);
+
+
+        int k = 0;
 
 
 

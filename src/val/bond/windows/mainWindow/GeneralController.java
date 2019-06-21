@@ -10,7 +10,10 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+import val.bond.resources.logic.OldNewLogicConnector;
+import val.bond.windows.authWindowPackage.AuthWindow;
 
 public class GeneralController {
     @FXML
@@ -259,4 +262,16 @@ public class GeneralController {
         isSidePanelOpen = !isSidePanelOpen;
     }
 
+    public void changeUserButtonClickEvent(ActionEvent event) {
+
+        Stage stage = (Stage)GeneralWindow.root.getScene().getWindow();
+        stage.close();
+        OldNewLogicConnector.restoreDefaults(OldNewLogicConnector.port, OldNewLogicConnector.ipAddress);
+        AuthWindow authWindow = new AuthWindow();
+        try {
+            authWindow.start(new Stage());
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
 }

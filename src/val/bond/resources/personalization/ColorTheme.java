@@ -5,7 +5,15 @@ import javafx.scene.paint.Color;
 public enum  ColorTheme {
     WHEAT("#faffd6", "#faffd6", "#f6fccc",
             "black","lightBlue", "mediumvioletred",
-            "#c3c997", "#8cb8ff", "#8cb8ff", Color.BLACK, "#faffd6");
+            "#c3c997", "#8cb8ff", "#8cb8ff", Color.BLACK, "#faffd6"),
+
+    RED_SUNSET("#570000", "#320000", "#320000",
+            "black", "#996464", "#380000",
+            "#411919", "#411919", "#650101", Color.WHITE, "#320000"),
+
+    SKY("#003846", "#004051", "#00212a", "black",
+            "#467c8b", "#002a35", "#184160", "#003340",
+            "#004a5d", Color.WHITE,"#004051");
 
     private String generalGridPaneColor;
     private String appToolBarColor;
@@ -41,42 +49,42 @@ public enum  ColorTheme {
     }
 
     public String getAppToolBarColor() {
-        return "-fx-background-color: " + appToolBarColor;
+        return ";-fx-background-color: " + appToolBarColor;
     }
 
     public String getCollectionSideHBoxColor() {
-        return "-fx-background-color: " + collectionSideHBoxColor;
+        return ";-fx-background-color: " + collectionSideHBoxColor;
     }
 
     public String getCollectionWorkGridPaneColor() {
-        return "-fx-background-color: " + collectionWorkGridPaneColor;
+        return ";-fx-background-color: " + collectionWorkGridPaneColor;
     }
 
     public String getGeneralGridPaneColor() {
-        return "-fx-background-color: " + generalGridPaneColor;
+        return ";-fx-background-color: " + generalGridPaneColor;
     }
 
     public String getMapWorkGridPaneColor() {
-        return "-fx-background-color: " + mapWorkGridPaneColor;
+        return ";-fx-background-color: " + mapWorkGridPaneColor;
     }
 
     public String getProfileGridPaneColor() {
-        return "-fx-background-color: " + profileGridPaneColor;
+        return ";-fx-background-color: " + profileGridPaneColor;
     }
 
     public String getSettingsSideHBoxColor() {
-        return "-fx-background-color: " + settingsSideHBoxColor;
+        return ";-fx-background-color: " + settingsSideHBoxColor;
     }
 
     public String getSettingsWorkGridPaneColor() {
-        return "-fx-background-color: " + settingsWorkGridPaneColor;
+        return ";-fx-background-color: " + settingsWorkGridPaneColor;
     }
 
     public String getSidePanelColor() {
-        return "-fx-background-color: " + sidePanelColor;
+        return ";-fx-background-color: " + sidePanelColor;
     }
 
     public String getCostumeClickPaneColor() {
-        return "-fx-background-color: " + costumeClickPaneColor;
+        return ";-fx-background-color: " + costumeClickPaneColor;
     }
 }

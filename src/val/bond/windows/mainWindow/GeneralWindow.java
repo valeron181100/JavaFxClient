@@ -3,10 +3,7 @@ package val.bond.windows.mainWindow;
 import javafx.animation.FadeTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
@@ -21,6 +18,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.GaussianBlur;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
@@ -34,8 +33,10 @@ import val.bond.applogic.Clothes.Costume;
 import val.bond.applogic.Enums.Color;
 import val.bond.applogic.Enums.Material;
 import val.bond.applogic.FileSystem.FileManager;
+import val.bond.internalization.Props;
 import val.bond.resources.customControlls.*;
 import val.bond.resources.loadingResources.ImagePathConst;
+import val.bond.resources.loadingResources.SettingsManager;
 import val.bond.resources.logic.OldNewLogicConnector;
 import val.bond.resources.models.CommandClickEvent;
 import val.bond.resources.models.CommandModel;
@@ -130,6 +131,10 @@ public class GeneralWindow extends Application {
     }
 
 
+    private static StringProperty localeSettingStringProp = new SimpleStringProperty();
+    private static StringProperty themeSettingStringProp = new SimpleStringProperty();
+    private static StringProperty avatarSettingStringProp = new SimpleStringProperty();
+
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -140,6 +145,9 @@ public class GeneralWindow extends Application {
         primaryStage.setMinHeight(800);
         primaryStage.setMinWidth(1300);
         primaryStage.setScene(scene);
+
+        setLocale(root);
+        loadAvatar(root);
 
         final CostumeTemplateGroup[] costumeTemplateGroup = new CostumeTemplateGroup[1];
 
@@ -154,7 +162,6 @@ public class GeneralWindow extends Application {
         StackPane darkStackPane = (StackPane) searchElement(root, "darkStackPane");
         BorderPane notificationBorderPane = (BorderPane) searchElement(root, "notificationBorderPane");
         Button menuButton = (Button) searchElement(root, "menuButton");
-
 
         GaussianBlur sidePanelBlur = new GaussianBlur();
 
@@ -179,7 +186,6 @@ public class GeneralWindow extends Application {
         profileTilePaneWidth.bind(scene.widthProperty());
         profileHbox.widthProperty().addListener((prop, oval, nval)->{
             if(nval.intValue() <= 263 && profileHbox.getChildren().contains(avatarVbox)){
-
                 profileHbox.getChildren().remove(avatarVbox);
             }
             if(nval.intValue() > 263 && !profileHbox.getChildren().contains(avatarVbox)){
@@ -187,9 +193,116 @@ public class GeneralWindow extends Application {
             }
         });
 
+        //Setting up settings
+
+        VBox settingsVbox = (VBox) searchElement(root, "settingsVbox");
+
+        HBox themeBox = new HBox();
+        themeBox.setSpacing(20);
+        themeBox.setAlignment(Pos.CENTER_LEFT);
+
+        Label themeLabel = new Label("Тема:");
+        themeLabel.textProperty().bind(themeSettingStringProp);
+        themeLabel.setTextFill(javafx.scene.paint.Color.BLACK);
+        themeLabel.setTextAlignment(TextAlignment.CENTER);
+        themeLabel.setFont(new Font("Helvetica Neue", 18));
+
+        ComboBox<String> themeCombo = new ComboBox<>(FXCollections.observableArrayList("WHEAT", "RED_SUNSET", "SKY"));
+        themeCombo.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
+            SettingsManager.setSetting("theme", newValue);
+            setColorTheme(ColorTheme.valueOf(newValue));
+        }));
+        themeCombo.getSelectionModel().select(SettingsManager.getSetting("theme"));
+
+        themeBox.getChildren().addAll(themeLabel, themeCombo);
+
+        settingsVbox.getChildren().add(themeBox);
+        ///
+
+        HBox localeBox = new HBox();
+        localeBox.setSpacing(20);
+        localeBox.setAlignment(Pos.CENTER_LEFT);
+        Label localeLabel = new Label("Языковые настройки:");
+        localeLabel.textProperty().bind(localeSettingStringProp);
+        localeLabel.setTextFill(javafx.scene.paint.Color.BLACK);
+        localeLabel.setTextAlignment(TextAlignment.CENTER);
+        localeLabel.setFont(new Font("Helvetica Neue", 18));
+
+        ComboBox<String> localeCombo = new ComboBox<>(FXCollections.observableArrayList("ru_RU", "be_BY", "hu_HU", "es_MX"));
+        localeCombo.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
+            SettingsManager.setSetting("locale", localeCombo.getSelectionModel().getSelectedItem());
+            setLocale(root);
+        }));
+        localeCombo.getSelectionModel().select(SettingsManager.getSetting("locale"));
+
+        localeBox.getChildren().addAll(localeLabel, localeCombo);
+
+        settingsVbox.getChildren().add(localeBox);
+
+        ///
+
+        HBox imageSetBox = new HBox();
+        imageSetBox.setSpacing(20);
+        imageSetBox.setAlignment(Pos.CENTER_LEFT);
+
+        Label imageSetLabel = new Label("Аватарка:");
+        imageSetLabel.textProperty().bind(avatarSettingStringProp);
+        imageSetLabel.setTextFill(javafx.scene.paint.Color.BLACK);
+        imageSetLabel.setTextAlignment(TextAlignment.CENTER);
+        imageSetLabel.setFont(new Font("Helvetica Neue", 18));
+
+        Button fileChooseButton = new Button("click");
+        fileChooseButton.getStyleClass().add("macos_button_style");
+        fileChooseButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("Jpeg Files", "*.jpg"),
+                    new FileChooser.ExtensionFilter("Png Files", "*.png")
+            );
+            File file = fileChooser.showOpenDialog(primaryStage);
+            if(file != null){
+                SettingsManager.setSetting("avatar_path", file.getPath());
+                loadAvatar(root);
+            }
+        });
+
+        imageSetBox.getChildren().addAll(imageSetLabel, fileChooseButton);
+
+        settingsVbox.getChildren().add(imageSetBox);
+
+        //Setting up connection break effects
+        OldNewLogicConnector.isConnected.addListener(((observable1, oldValue1, newValue1) -> {
+            if(newValue1){
+                menuButton.setDisable(false);
+                new Thread(()->{
+                    for (double i = sidePanelBlur.getRadius(); i > 0.0; i--) {
+                        double finalI = i;
+                        Platform.runLater(()->sidePanelBlur.setRadius(finalI));
+                    }
+                }).start();
+                FadeTransition fadeTransition = new FadeTransition(Duration.millis(150), darkStackPane);
+                fadeTransition.setFromValue(0.5);
+                fadeTransition.setToValue(0.0);
+                fadeTransition.play();
+            }else{
+                menuButton.setDisable(true);
+                FadeTransition fadeTransition = new FadeTransition(Duration.millis(150), darkStackPane);
+                fadeTransition.setFromValue(0.0);
+                fadeTransition.setToValue(0.5);
+                fadeTransition.play();
+                new Thread(()->{
+                    for (double i = sidePanelBlur.getRadius(); i < 10.0; i++) {
+                        double finalI = i;
+                        Platform.runLater(()->sidePanelBlur.setRadius(finalI));
+                    }
+                }).start();
+            }
+        }));
+
         //Setting up toggle switcher to edit collection panel
         ToggleSwitch switcher = new ToggleSwitch(30);
         ArrayList<Node> costumeClickPaneNodes = new ArrayList<>();
+
         switcher.switchedOnProperty().addListener((observable, oldValue, newValue) -> {
             if(newValue){
                 costumeTemplateGroup[0].getTemplates().forEach(CostumeTemplate::playEditAnimation);
@@ -203,6 +316,7 @@ public class GeneralWindow extends Application {
                 costumeClickPane.setPrefWidth(500);
                 costumeClickPane.setMinHeight(180);
                 costumeClickPane.setMinWidth(500);
+
                 //Creating edit panel
                 HBox editHBox = new HBox();
 
@@ -546,6 +660,8 @@ public class GeneralWindow extends Application {
         //Setting up user filter combobox
         ComboBox<String> usersFilterCB = new ComboBox<>();
 
+        usersFilterCB.setPadding(new Insets(0,0,0,20));
+
         usersFilterCB.getStyleClass().add("macos_button_style");
 
         usersFilterCB.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
@@ -613,7 +729,7 @@ public class GeneralWindow extends Application {
         mainWorkSpaceGridPane.setEffect(sidePanelBlur);
 
 
-        setColorTheme(ColorTheme.WHEAT);
+        setColorTheme(ColorTheme.valueOf(SettingsManager.getSetting("theme")));
 
         VBox profileLabelsBox = (VBox) searchElement(root, "profileLabelsBox");
         profileLabelsBox.getChildren().forEach(p->{
@@ -842,6 +958,7 @@ public class GeneralWindow extends Application {
                 usersLogins.add("-");
                 costumeTemplateGroup[0].getTemplates().forEach(p -> usersLogins.add(p.getOwnerUser()));
                 usersFilterCB.setItems(FXCollections.observableArrayList(usersLogins.stream().distinct().collect(Collectors.toList())));
+                usersFilterCB.getSelectionModel().select(0);
             }
             costumeTemplateGroup[0].getTemplates().forEach(p->p.setClickPane(360,1200,costumeClickPane));
             costumeTemplateGroup[0].getTemplates().forEach(p -> collectionShowTilePane.getChildren().add(p));
@@ -875,7 +992,6 @@ public class GeneralWindow extends Application {
 
         ObservableChangeListener<String> infoChangeListener = ((observable, oldValue, newValue) -> {
 
-            //TODO: Opening info window
             OldNewLogicConnector.infoWindowConnetionStr = newValue;
             InfoWindow infoWindow = new InfoWindow();
             Stage stage = new Stage();
@@ -957,6 +1073,27 @@ public class GeneralWindow extends Application {
     });
 
 
+    public void setLocale(Pane root){
+        Props.loadProps(SettingsManager.getSetting("locale"));
+
+        Label settingsSideLabel = (Label)root.getScene().lookup("#settingsSideLabel");
+        Label collectionSideLabel = (Label)root.getScene().lookup("#collectionSideLabel");
+        Label loginSideLabel = (Label)root.getScene().lookup("#loginLabel");
+        Button changeUserButton = (Button)root.getScene().lookup("#changeUserButton");
+
+        settingsSideLabel.setText(Props.getProps().getProperty("settings"));
+        collectionSideLabel.setText(Props.getProps().getProperty("collection"));
+        loginSideLabel.setText(Props.getProps().getProperty("login"));
+        changeUserButton.setText(Props.getProps().getProperty("change_user"));
+        localeSettingStringProp.setValue(Props.getProps().getProperty("locale_setting"));
+        themeSettingStringProp.setValue(Props.getProps().getProperty("theme_setting"));
+        avatarSettingStringProp.setValue(Props.getProps().getProperty("avatar"));
+    }
+
+    public void loadAvatar(Pane root){
+        ImageView avatar = (ImageView)root.getScene().lookup("#avatarIV");
+        avatar.setImage(new Image("file:"+SettingsManager.getSetting("avatar_path")));
+    }
 
     public void setColorTheme(ColorTheme theme){
 
@@ -990,7 +1127,7 @@ public class GeneralWindow extends Application {
                 ((Label)p).setTextFill(theme.getTextColor());
         });
 
-        hintSwitcherText.setTextFill(theme.getTextColor());
+        Platform.runLater(()->hintSwitcherText.setTextFill(theme.getTextColor()));
     }
 
 }

@@ -30,8 +30,38 @@ public class OldNewLogicConnector {
 
     public static User currentUser = new User();
 
-    public static int port = 4000;
+    public static int port;
 
-    public static String ipAddress = "localhost";
+    public static String ipAddress;
+
+    public static void restoreDefaults(int port, String ipAddress){
+        addResponse = new ObservableString();
+        commandLine = new ObservableString();
+        addIfMaxResponse = new ObservableString();
+        loadResponse = new ObservableString();
+        importResponse = new ObservableString();
+        startResponse = new ObservableString();
+        infoResponse = new ObservableString();
+        helpResponse = new ObservableString();
+        changeDefFileResponse = new ObservableString();
+        trimToMinResponse = new ObservableString();
+        saveResponse = new ObservableString();
+        removeResponse = new ObservableString();
+        showResponse = new ObservableString();
+        authResponse = new ObservableString();
+        errorResponse = new ObservableString();
+        showCostumeResponse = new ObservableString();
+
+        infoWindowConnetionStr = "";
+
+        isConnected = new SimpleBooleanProperty(true);
+
+
+        currentUser = new User();
+
+        OldNewLogicConnector.port = port;
+
+        OldNewLogicConnector.ipAddress = ipAddress;
+    }
 
 }
